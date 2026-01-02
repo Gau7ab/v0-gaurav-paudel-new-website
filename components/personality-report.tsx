@@ -359,13 +359,8 @@ export function PersonalityReport({
               max-width: 100%;
               margin: 0;
               padding: 20px;
-              color: #000;
+              color: inherit;
               background: #fff;
-            }
-            .print-report * {
-              color: #000 !important;
-              background: #fff !important;
-              border-color: #ccc !important;
             }
             .print-report .section {
               page-break-inside: avoid;
@@ -528,14 +523,9 @@ export function PersonalityReport({
               max-width: 100%;
               margin: 0;
               padding: 15px;
-              color: #000;
+              color: inherit;
               background: #fff;
               font-size: 10px;
-            }
-            .print-report * {
-              color: #000 !important;
-              background: #fff !important;
-              border-color: #ccc !important;
             }
             .print-report .page-break {
               page-break-before: always;

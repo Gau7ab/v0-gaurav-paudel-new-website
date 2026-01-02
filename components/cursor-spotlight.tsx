@@ -63,7 +63,7 @@ export function CursorSpotlight() {
   }
 
   return (
-    <>
+    <div className="print:hidden">
       <div
         className="fixed pointer-events-none z-[9998] w-[220px] h-[220px] rounded-full transition-opacity duration-300"
         style={{
@@ -106,6 +106,6 @@ export function CursorSpotlight() {
           />
         </svg>
       </div>
-    </>
+    </div>
   )
 }

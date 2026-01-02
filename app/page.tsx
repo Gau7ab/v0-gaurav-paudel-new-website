@@ -88,23 +88,23 @@ const treksData = [
     description: "Gateway to the Annapurna Sanctuary",
     elevation: "4,130m",
     experience:
-      "Standing at Annapurna Base Camp, surrounded by towering peaks including Annapurna I, Machapuchare, and Hiunchuli, was a surreal experience. The journey through diverse landscapes from lush rhododendron forests to alpine meadows taught me patience and perseverance.",
+      "Annapurna Base Camp Trek is one of the most popular trekking routes in Nepal, leading to the base of Annapurna I (8,091 m). The trail passes through traditional Gurung villages, dense rhododendron forests, glaciers, and high-altitude landscapes, ending in a natural Himalayan amphitheater.",
   },
   {
     name: "Annapurna North Basecamp",
     image: "/images/annapurna-20north-20basecamp.jpg",
-    description: "Pristine alpine lake at Myagdi district",
-    elevation: "4,555m",
+    description: "Remote and less-explored route to the north face",
+    elevation: "4,190m",
     experience:
-      "The trek to Annapurna North Basecamp in Myagdi district was an extraordinary adventure through pristine wilderness. Standing beside the stunning turquoise alpine lake with the snow-capped Annapurna range towering in the background, I felt the raw power of the Himalayas. This less-traveled route offered solitude and unmatched natural beauty.",
+      "Annapurna North Base Camp Trek is a remote and less-explored route to the north face of Annapurna I. Accessed via Narchyang in Myagdi district, the trek includes alpine terrain, glacier views, and the sacred Panchakunda Lake. Camping and strong physical endurance are required.",
   },
   {
     name: "Mardi Himal",
     image: "/images/mardi-himal2.jpeg",
-    description: "Hidden gem of the Annapurna region",
+    description: "Scenic alternative to ABC with dramatic views",
     elevation: "4,500m",
     experience:
-      "Mardi Himal trek offered an intimate experience with nature, away from the crowded trails. The panoramic views of Machapuchare and Annapurna South from the high camp were breathtaking, especially during sunrise when the peaks turned golden.",
+      "Mardi Himal Trek is a scenic and quieter alternative to the Annapurna Base Camp trek. The route follows narrow ridgelines with dramatic views of Machhapuchhre (Fishtail), Annapurna South, and Hiunchuli, making it ideal for trekkers seeking solitude and mountain views.",
   },
   {
     name: "Gosainkunda",
@@ -112,7 +112,7 @@ const treksData = [
     description: "Sacred lake at high altitude",
     elevation: "4,380m",
     experience:
-      "Trekking to Gosainkunda was both a physical challenge and a spiritual journey. The sacred lake, surrounded by snow-capped peaks, holds immense religious significance. Witnessing pilgrims perform rituals at this high-altitude lake was a humbling experience that connected me to Nepal's rich cultural heritage.",
+      "Gosaikunda Lake Trek is a high-altitude pilgrimage and trekking route in Langtang National Park. The sacred alpine lake holds religious significance for Hindus and Buddhists and offers rugged trails, rocky landscapes, and seasonal snow conditions.",
   },
   {
     name: "Poon Hill",
@@ -120,7 +120,7 @@ const treksData = [
     description: "Classic sunrise viewpoint",
     elevation: "3,210m",
     experience:
-      "Waking up at 4 AM to climb Poon Hill in the darkness was worth every step. Watching the sun rise over the Dhaulagiri and Annapurna ranges, painting the peaks in shades of orange and pink, remains one of my most cherished memories from the Himalayas.",
+      "Poon Hill Trek is a short and beginner-friendly trek famous for its sunrise views over the Annapurna and Dhaulagiri mountain ranges. It is one of the most accessible trekking routes in Nepal and ideal for first-time trekkers.",
   },
   {
     name: "Tilicho Lake",
@@ -128,15 +128,15 @@ const treksData = [
     description: "One of the highest lakes in the world",
     elevation: "4,919m",
     experience:
-      "The trek to Tilicho Lake tested my limits with its challenging terrain and high altitude. Reaching the turquoise waters of one of the world's highest lakes, with the massive Tilicho Peak as backdrop, made every difficult step worthwhile. The sense of achievement was overwhelming.",
+      "Tilicho Lake Trek leads to one of the world’s highest alpine lakes. The route features rugged high-altitude terrain, landslide-prone sections, and dramatic Himalayan scenery. The trek is commonly combined with the Annapurna Circuit.",
   },
   {
     name: "Khumai Danda",
     image: "/images/khumai-danda.jpeg",
-    description: "Panoramic viewpoint in Syangja",
-    elevation: "1,890m",
+    description: "Panoramic viewpoint in Kaski",
+    elevation: "3,245m",
     experience:
-      "Khumai Danda offered a perfect blend of culture and nature. The panoramic views of the Annapurna and Dhaulagiri ranges from this lesser-known viewpoint were spectacular. Interacting with local communities and experiencing their warm hospitality added depth to this memorable trek.",
+      "Khumai Danda Trek is a short and emerging trekking route near Pokhara, known for sunrise and sunset views of Machhapuchhre, Annapurna South, and Lamjung Himal. It is ideal for weekend hikes and beginner trekkers.",
   },
 ]
 
@@ -313,7 +313,7 @@ export default function Home() {
             </h1>
           </AnimateOnScroll>
 
-          <AnimateOnScroll animation="slideUp" delay={0.4}>
+          <AnimateOnScroll animation="slideUp" delay={0.4} className="mb-8">
             <p className="text-xl md:text-2xl text-foreground/90 mb-8 max-w-2xl mx-auto leading-relaxed">
               Exploring the majestic Himalayas, one trail at a time
             </p>
@@ -350,12 +350,12 @@ export default function Home() {
           <AnimateOnScroll animation="slideUp" delay={0.3} className="max-w-4xl mx-auto">
             <Card className="border-none shadow-2xl bg-card card-hover rounded-2xl overflow-hidden">
               <CardContent className="p-8 md:p-12">
-                <p className="text-lg md:text-xl leading-relaxed text-foreground mb-6 text-justify">
+                <p className="text-lg md:text-xl leading-relaxed text-foreground mb-6 text-center">
                   I'm Om Prakash Paudel, a student with a strong academic background in management and a deep personal
                   passion for the mountains. While I'm progressing through my education, trekking has become the space
                   where I test my mindset, discipline, and leadership.
                 </p>
-                <p className="text-lg md:text-xl leading-relaxed text-muted-foreground mb-6 text-justify">
+                <p className="text-lg md:text-xl leading-relaxed text-muted-foreground mb-6 text-center">
                   Studying management and organizational behavior taught me how teams think. The mountains taught me how
                   people move — how they push limits, stay calm under pressure, and grow through discomfort.
                 </p>
@@ -366,14 +366,14 @@ export default function Home() {
                 <div className="grid md:grid-cols-2 gap-4 mb-8">
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-background/50 border border-primary/20">
                     <GraduationCap className="h-6 w-6 text-primary shrink-0 mt-1" />
-                    <p className="text-foreground text-justify">
+                    <p className="text-foreground text-center">
                       <span className="font-semibold text-primary">Education</span> gives me clarity, structure, and
                       strategy.
                     </p>
                   </div>
                   <div className="flex items-start gap-3 p-4 rounded-xl bg-background/50 border border-secondary/20">
                     <Mountain className="h-6 w-6 text-secondary shrink-0 mt-1" />
-                    <p className="text-foreground text-justify">
+                    <p className="text-foreground text-center">
                       <span className="font-semibold text-secondary">Trekking</span> gives me resilience, confidence,
                       and life experience you don't get inside a classroom.
                     </p>

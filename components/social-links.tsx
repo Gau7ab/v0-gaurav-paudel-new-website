@@ -23,7 +23,7 @@ export function SocialLinks() {
   ]
 
   return (
-    <div data-social-links className="fixed bottom-8 left-8 flex flex-col gap-2 z-40">
+    <div data-social-links className="fixed bottom-8 left-8 flex flex-col gap-2 z-40 print:hidden">
       {socialLinks.map((link) => (
         <Button
           key={link.label}
