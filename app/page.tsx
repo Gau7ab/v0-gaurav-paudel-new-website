@@ -279,14 +279,14 @@ export default function Home() {
         {/* Background Image with Parallax */}
         <div className="absolute inset-0">
           <Image
-            src="/images/mardi-himal1.jpeg"
+            src="/images/himalayan-hero.jpg"
             alt="Himalayan Mountains"
             fill
             className="object-cover"
             priority
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/30 to-background/60" />
         </div>
 
         {/* Contour pattern overlay */}
@@ -322,14 +322,14 @@ export default function Home() {
           <AnimateOnScroll animation="slideUp" delay={0.6} className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="rounded-full px-8 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 btn-hover-lift"
+              className="rounded-full px-8 py-6 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 btn-hover-lift shadow-lg hover:shadow-xl transition-shadow"
             >
               <a href="#portfolio">View Trek Portfolio</a>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-8 py-6 text-lg font-semibold border-2 border-secondary text-secondary bg-transparent hover:bg-secondary/10 btn-hover-lift"
+              className="rounded-full px-8 py-6 text-lg font-semibold border-2 border-secondary text-secondary bg-transparent hover:bg-secondary/10 btn-hover-lift shadow-lg hover:shadow-xl transition-shadow"
             >
               <a href="#contact">Connect With Me</a>
             </Button>

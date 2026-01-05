@@ -17,6 +17,7 @@ export function Navigation() {
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [scrolledPast, setScrolledPast] = useState(false)
   const pathname = usePathname()
 
   // Handle scroll and update active section
@@ -130,25 +131,35 @@ export function Navigation() {
         data-navigation
         role="navigation"
         aria-label="Main navigation"
-        className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
-        } ${
-          isScrolled || isMobileMenuOpen
-            ? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b"
-            : "bg-transparent"
+        className={`fixed top-8 left-0 right-0 z-50 flex justify-center transition-all duration-300 ${
+          isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
         }`}
       >
-        <div className="container flex h-16 items-center justify-between px-4">
+        <div
+          className={`
+          flex items-center gap-2 px-6 py-3 rounded-full
+          bg-background/40 backdrop-blur-xl border border-primary/20
+          shadow-lg transition-all duration-300
+          ${isScrolled ? "lg:gap-1" : "gap-3"}
+          hidden md:flex
+        `}
+        >
+          {/* Logo - hidden on scroll on desktop */}
           <Link
             href="/"
-            className="text-xl font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1"
+            className={`
+              font-bold focus-visible:outline-none focus-visible:ring-2 
+              focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-3 py-1
+              transition-all duration-300 whitespace-nowrap
+              ${isScrolled ? "hidden lg:inline" : "inline"}
+            `}
             aria-label="Go to homepage"
           >
-            Gaurav Paudel
+            Gaurav
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-1">
             {links.map((link) => {
               const isActive =
                 (pathname === "/" && activeSection === link.id) ||
@@ -166,97 +177,118 @@ export function Navigation() {
                   key={link.href}
                   href={link.href}
                   onClick={(e) => handleClick(e, link.href)}
-                  className={`text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md px-2 py-1 ${
-                    isActive ? "text-primary" : "text-muted-foreground"
-                  }`}
+                  className={`
+                    text-sm font-medium transition-all rounded-full px-3 py-1.5
+                    focus-visible:outline-none focus-visible:ring-2 
+                    focus-visible:ring-ring focus-visible:ring-offset-2
+                    ${
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    }
+                  `}
                   aria-current={isActive ? "page" : undefined}
                 >
                   {link.label}
                 </Link>
               )
             })}
-
-            <EnhancedButton
-              data-theme-toggle
-              variant="ghost"
-              size="icon"
-              className="ml-4"
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </EnhancedButton>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-2">
-            <EnhancedButton
-              data-theme-toggle
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </EnhancedButton>
-            <EnhancedButton
-              data-hamburger
-              variant="ghost"
-              size="icon"
-              onClick={toggleMobileMenu}
-              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </EnhancedButton>
-          </div>
+          {/* Theme Toggle */}
+          <EnhancedButton
+            data-theme-toggle
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-8 w-8 ml-2"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          </EnhancedButton>
         </div>
 
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div
-            id="mobile-menu"
-            className="md:hidden border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
-            role="menu"
-            aria-orientation="vertical"
+        <div className="md:hidden flex items-center gap-2">
+          <EnhancedButton
+            data-theme-toggle
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-8 w-8"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
           >
-            <div className="container px-4 py-4">
-              <div className="flex flex-col space-y-4">
-                {links.map((link) => {
-                  const isActive =
-                    (pathname === "/" && activeSection === link.id) ||
-                    (pathname === "/personality-test" && link.id === "personality-test") ||
-                    (pathname === "/tools" && link.id === "tools") ||
-                    (pathname === "/games" && link.id === "games") ||
-                    (pathname !== "/" &&
-                      pathname !== "/personality-test" &&
-                      pathname !== "/tools" &&
-                      pathname !== "/games" &&
-                      link.href === pathname)
+            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          </EnhancedButton>
 
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={(e) => handleClick(e, link.href)}
-                      className={`text-base font-medium transition-colors hover:text-primary py-2 px-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                        isActive ? "text-primary" : "text-muted-foreground"
-                      }`}
-                      role="menuitem"
-                      aria-current={isActive ? "page" : undefined}
-                    >
-                      {link.label}
-                    </Link>
-                  )
-                })}
-              </div>
+          <EnhancedButton
+            data-hamburger
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-8 w-8"
+            onClick={toggleMobileMenu}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
+          >
+            {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </EnhancedButton>
+        </div>
+      </nav>
+
+      {/* Mobile Navigation Menu */}
+      {isMobileMenuOpen && (
+        <div
+          id="mobile-menu"
+          className={`
+            fixed top-20 left-4 right-4 md:hidden z-40
+            bg-background/40 backdrop-blur-xl border border-primary/20
+            rounded-2xl shadow-lg
+          `}
+          role="menu"
+          aria-orientation="vertical"
+        >
+          <div className="p-4">
+            <div className="flex flex-col space-y-2">
+              {links.map((link) => {
+                const isActive =
+                  (pathname === "/" && activeSection === link.id) ||
+                  (pathname === "/personality-test" && link.id === "personality-test") ||
+                  (pathname === "/tools" && link.id === "tools") ||
+                  (pathname === "/games" && link.id === "games") ||
+                  (pathname !== "/" &&
+                    pathname !== "/personality-test" &&
+                    pathname !== "/tools" &&
+                    pathname !== "/games" &&
+                    link.href === pathname)
+
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={(e) => handleClick(e, link.href)}
+                    className={`
+                      text-sm font-medium transition-all py-2 px-4 rounded-lg
+                      focus-visible:outline-none focus-visible:ring-2 
+                      focus-visible:ring-ring focus-visible:ring-offset-2
+                      ${
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                      }
+                    `}
+                    role="menuitem"
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                )
+              })}
             </div>
           </div>
-        )}
-      </nav>
+        </div>
+      )}
 
       {/* Spacer to prevent content from hiding behind fixed navbar */}
       <div className="h-16" />
