@@ -1,36 +1,32 @@
 "use client"
 
-import { useEffect, useState, useCallback, useRef } from "react"
+import { useEffect, useRef } from "react"
 
 export function CursorSpotlight() {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [isVisible, setIsVisible] = useState(false)
+  const spotlightRef = useRef<HTMLDivElement>(null)
+  const cursorRef = useRef<HTMLDivElement>(null)
+  const position = useRef({ x: 0, y: 0 })
   const targetPosition = useRef({ x: 0, y: 0 })
   const animationFrameId = useRef<number | null>(null)
 
-  const lerp = (start: number, end: number, factor: number) => {
-    return start + (end - start) * factor
+  const animate = () => {
+    position.current.x += (targetPosition.current.x - position.current.x) * 0.25
+    position.current.y += (targetPosition.current.y - position.current.y) * 0.25
+
+    if (spotlightRef.current) {
+      spotlightRef.current.style.transform = `translate3d(${position.current.x - 140}px, ${position.current.y - 140}px, 0)`
+    }
+
+    if (cursorRef.current) {
+      cursorRef.current.style.transform = `translate3d(${position.current.x}px, ${position.current.y}px, 0)`
+    }
+
+    animationFrameId.current = requestAnimationFrame(animate)
   }
 
-  const animate = useCallback(() => {
-    setPosition((prev) => ({
-      x: lerp(prev.x, targetPosition.current.x, 0.15),
-      y: lerp(prev.y, targetPosition.current.y, 0.15),
-    }))
-    animationFrameId.current = requestAnimationFrame(animate)
-  }, [])
-
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     targetPosition.current = { x: e.clientX, y: e.clientY }
-  }, [])
-
-  const handleMouseEnter = useCallback(() => {
-    setIsVisible(true)
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    setIsVisible(false)
-  }, [])
+  }
 
   useEffect(() => {
     const hasHover = window.matchMedia("(hover: hover)").matches
@@ -41,48 +37,38 @@ export function CursorSpotlight() {
       return
     }
 
-    setIsVisible(true)
     animationFrameId.current = requestAnimationFrame(animate)
-
     window.addEventListener("mousemove", handleMouseMove, { passive: true })
-    document.body.addEventListener("mouseenter", handleMouseEnter)
-    document.body.addEventListener("mouseleave", handleMouseLeave)
 
     return () => {
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current)
       }
       window.removeEventListener("mousemove", handleMouseMove)
-      document.body.removeEventListener("mouseenter", handleMouseEnter)
-      document.body.removeEventListener("mouseleave", handleMouseLeave)
     }
-  }, [animate, handleMouseMove, handleMouseEnter, handleMouseLeave])
-
-  if (!isVisible) {
-    return null
-  }
+  }, [])
 
   return (
     <div className="print:hidden">
       <div
-        className="fixed pointer-events-none z-[9998] w-[220px] h-[220px] rounded-full transition-opacity duration-300"
+        ref={spotlightRef}
+        className="fixed pointer-events-none z-[9998] w-[280px] h-[280px] rounded-full"
         style={{
-          left: position.x - 110,
-          top: position.y - 110,
           background:
-            "radial-gradient(circle, rgba(245, 179, 72, 0.25) 0%, rgba(245, 179, 72, 0.15) 30%, rgba(245, 179, 72, 0.08) 50%, transparent 70%)",
-          filter: "blur(20px)",
+            "radial-gradient(circle, rgba(245, 179, 72, 0.4) 0%, rgba(245, 179, 72, 0.2) 30%, transparent 70%)",
+          filter: "blur(45px)",
           willChange: "left, top",
+          backfaceVisibility: "hidden",
         }}
         aria-hidden="true"
       />
 
       <div
-        className="fixed pointer-events-none z-[9999] transition-opacity duration-200"
+        ref={cursorRef}
+        className="fixed pointer-events-none z-[9999]"
         style={{
-          left: position.x,
-          top: position.y,
-          willChange: "left, top",
+          willChange: "transform",
+          backfaceVisibility: "hidden",
         }}
         aria-hidden="true"
       >
@@ -93,7 +79,7 @@ export function CursorSpotlight() {
           fill="none"
           className="-translate-x-[2px] -translate-y-[2px]"
           style={{
-            filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))",
+            filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
           }}
         >
           <path
