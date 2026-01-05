@@ -22,25 +22,27 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Om Prakash Paudel — Trekker | Traveler",
+  title: "Om Prakash Paudel Gaurav - Trekker & MBA Scholar",
   description:
-    "Adventure-seeking trekker and traveler exploring Nepal's majestic Himalayan landscapes. MBA student passionate about mountains and exploration.",
+    "Om Prakash Paudel Gaurav is a trekker and MBA scholar from Nepal exploring Himalayan mountains and sharing adventure experiences.",
   keywords:
-    "Om Prakash Paudel, Gaurav Paudel, trekker, traveler, Nepal, Himalayas, Annapurna, portfolio, MBA, adventure",
+    "Om Prakash Paudel, Om Prakash Paudel Gaurav, Om Gaurav, trekker Nepal, MBA scholar Nepal, Himalayan trekking, adventure explorer",
   authors: [{ name: "Om Prakash Paudel" }],
   creator: "Om Prakash Paudel",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://gauravpaudel.com.np",
-    title: "Om Prakash Paudel — Trekker | Traveler",
-    description: "Adventure-seeking trekker and traveler exploring Nepal's majestic Himalayan landscapes.",
+    url: "https://omgaurav.com.np",
+    title: "Om Prakash Paudel Gaurav - Trekker & MBA Scholar",
+    description:
+      "Om Prakash Paudel Gaurav is a trekker and MBA scholar from Nepal exploring Himalayan mountains and sharing adventure experiences.",
     siteName: "Om Prakash Paudel Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Om Prakash Paudel — Trekker | Traveler",
-    description: "Adventure-seeking trekker and traveler exploring Nepal's majestic Himalayan landscapes.",
+    title: "Om Prakash Paudel Gaurav - Trekker & MBA Scholar",
+    description:
+      "Om Prakash Paudel Gaurav is a trekker and MBA scholar from Nepal exploring Himalayan mountains and sharing adventure experiences.",
   },
   robots: {
     index: true,
@@ -63,6 +65,31 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${inter.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Om Prakash Paudel",
+              alternateName: "Om Prakash Paudel Gaurav",
+              url: "https://omgaurav.com.np",
+              description:
+                "Trekker, explorer, and MBA scholar from Nepal specializing in Himalayan adventures and mountain experiences.",
+              sameAs: [
+                "https://instagram.com/gaurab__as_a",
+                "https://facebook.com/omgaurav",
+                "https://linkedin.com/in/om-prakash-paudel",
+              ],
+              jobTitle: "Trekker & Adventure Explorer",
+              nationality: "Nepali",
+              areaServed: "Nepal",
+              knowsAbout: ["Himalayan Trekking", "Mountain Navigation", "Adventure Leadership", "MBA"],
+            }),
+          }}
+        />
+      </head>
       <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <AccessibilitySkipLinks />

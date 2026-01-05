@@ -308,14 +308,14 @@ export default function Home() {
 
           <AnimateOnScroll animation="slideUp" delay={0.2} className="mb-8">
             <h1 className="text-5xl md:text-7xl font-bold text-foreground drop-shadow-lg">
-              Om Prakash
-              <span className="block text-primary">Paudel (Gaurav)</span>
+              Om Prakash Paudel
+              <span className="block text-primary">(Gaurav)</span>
             </h1>
           </AnimateOnScroll>
 
           <AnimateOnScroll animation="slideUp" delay={0.4} className="mb-8">
             <p className="text-xl md:text-2xl text-foreground/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Exploring the majestic Himalayas, one trail at a time
+              MBA Scholar & Himalayan Trekker Exploring Nepal's Mountains
             </p>
           </AnimateOnScroll>
 
@@ -343,17 +343,17 @@ export default function Home() {
 
         <div className="container mx-auto px-4 pt-8">
           <AnimateOnScroll animation="fadeIn">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">About Me</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">About Om Prakash Paudel</h2>
             <div className="w-20 h-1 bg-primary mx-auto mb-12 rounded-full" />
           </AnimateOnScroll>
 
           <AnimateOnScroll animation="slideUp" delay={0.3} className="max-w-4xl mx-auto">
-            <Card className="border-none shadow-2xl bg-card card-hover rounded-2xl overflow-hidden">
+            <Card className="border-none shadow-2xl bg-card rounded-2xl overflow-hidden">
               <CardContent className="p-8 md:p-12">
                 <p className="text-lg md:text-xl leading-relaxed text-foreground mb-6 text-center">
                   I'm Om Prakash Paudel, a student with a strong academic background in management and a deep personal
-                  passion for the mountains. While I'm progressing through my education, trekking has become the space
-                  where I test my mindset, discipline, and leadership.
+                  passion for the mountains. While pursuing my MBA education, trekking has become the space where I test
+                  my mindset, discipline, and leadership across Nepal's Himalayan region.
                 </p>
                 <p className="text-lg md:text-xl leading-relaxed text-muted-foreground mb-6 text-center">
                   Studying management and organizational behavior taught me how teams think. The mountains taught me how
@@ -405,10 +405,7 @@ export default function Home() {
           <div className="grid gap-8 md:grid-cols-3 max-w-5xl mx-auto">
             <AnimateStagger delay={0.3} staggerDelay={0.15} animation="slideUp">
               {leadershipExperience.map((exp, index) => (
-                <Card
-                  key={index}
-                  className="border-none shadow-xl bg-card card-hover rounded-2xl overflow-hidden group"
-                >
+                <Card key={index} className="border-none shadow-xl bg-card rounded-2xl overflow-hidden group">
                   <CardContent className="p-6 text-center">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                       <exp.icon className="h-8 w-8 text-primary" />
@@ -436,11 +433,13 @@ export default function Home() {
           <div className="grid gap-8 md:grid-cols-2">
             {/* Education Timeline */}
             <AnimateOnScroll animation="slideRight" delay={0.2}>
-              <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-card rounded-2xl">
-                <CardHeader className="bg-primary/10 border-b border-primary/20">
-                  <div className="flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-foreground">Education</CardTitle>
+              <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-card rounded-2xl overflow-hidden">
+                <CardHeader className="p-6 border-b border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                      <GraduationCap className="h-5 w-5 text-primary" />
+                    </div>
+                    <CardTitle className="text-foreground text-2xl">Education</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -469,10 +468,12 @@ export default function Home() {
             {/* Work Experience and Internship */}
             <AnimateOnScroll animation="slideLeft" delay={0.2}>
               <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-card rounded-2xl">
-                <CardHeader className="bg-secondary/10 border-b border-secondary/20">
-                  <div className="flex items-center gap-2">
-                    <Briefcase className="h-5 w-5 text-secondary" />
-                    <CardTitle className="text-foreground">Work Experience & Internship</CardTitle>
+                <CardHeader className="bg-gradient-to-r from-secondary/5 to-secondary/10 border-b border-secondary/20 p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-lg bg-secondary/15">
+                      <Briefcase className="h-5 w-5 text-secondary" />
+                    </div>
+                    <CardTitle className="text-lg text-foreground">Work Experience & Internship</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -506,10 +507,12 @@ export default function Home() {
             {/* Achievements */}
             <AnimateOnScroll animation="slideUp" delay={0.3}>
               <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-card rounded-2xl">
-                <CardHeader className="bg-primary/10 border-b border-primary/20">
-                  <div className="flex items-center gap-2">
-                    <Award className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-foreground">Achievements</CardTitle>
+                <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/20 p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-lg bg-primary/15">
+                      <Award className="h-5 w-5 text-primary" />
+                    </div>
+                    <CardTitle className="text-lg text-foreground">Achievements</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -534,10 +537,12 @@ export default function Home() {
             {/* Skills */}
             <AnimateOnScroll animation="slideUp" delay={0.3}>
               <Card className="border-none shadow-lg hover:shadow-xl transition-shadow bg-card rounded-2xl">
-                <CardHeader className="bg-secondary/10 border-b border-secondary/20">
-                  <div className="flex items-center gap-2">
-                    <Star className="h-5 w-5 text-secondary" />
-                    <CardTitle className="text-foreground">Skills</CardTitle>
+                <CardHeader className="bg-gradient-to-r from-secondary/5 to-secondary/10 border-b border-secondary/20 p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-lg bg-secondary/15">
+                      <Star className="h-5 w-5 text-secondary" />
+                    </div>
+                    <CardTitle className="text-lg text-foreground">Skills</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
