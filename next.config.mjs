@@ -8,12 +8,8 @@ const nextConfig = {
   },
   redirects: async () => {
     return [
-      {
-        source: '/:path*',
-        destination: 'https://omgaurav.com.np/:path*',
-        permanent: true,
-        basePath: false,
-      },
+      // For SEO migration, handle redirects from old domain at the hosting/DNS level
+      // Do NOT use next.config redirects as they cause infinite loops when redirecting to the same domain
     ]
   },
   rewrites: async () => {
