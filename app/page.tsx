@@ -29,6 +29,99 @@ import { useState } from "react"
 import { HeroProfile } from "@/components/hero-profile"
 import { CloudEffect } from "@/components/cloud-effect"
 import { SnowEffect } from "@/components/snow-effect"
+import { ProjectsShowcase } from "@/components/projects-showcase"
+
+// Placeholder for the ProjectsShowcase component, assuming it's in a separate file
+// and needs to be imported. For this merge, we'll assume it's available.
+// If ProjectsShowcase were in the same file, it would be defined here.
+// For now, we'll simulate its presence.
+// const ProjectsShowcase = () => (
+//   <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+//     {/* Example project cards - replace with actual ProjectsShowcase content */}
+//     <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card rounded-2xl overflow-hidden group">
+//       <CardHeader className="bg-primary/10 border-b border-primary/20">
+//         <CardTitle className="text-xl text-foreground group-hover:text-primary transition-colors">
+//           Aakar Academy
+//         </CardTitle>
+//       </CardHeader>
+//       <CardContent className="p-6">
+//         <p className="text-muted-foreground mb-4">Educational platform with course management</p>
+//         <div className="flex flex-wrap gap-2 mb-4">
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             Next.js
+//           </Badge>
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             React
+//           </Badge>
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             PostgreSQL
+//           </Badge>
+//         </div>
+//         <a
+//           href="/glabs"
+//           className="text-primary hover:text-primary/80 font-semibold text-sm flex items-center gap-1"
+//         >
+//           View Project →
+//         </a>
+//       </CardContent>
+//     </Card>
+//     <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card rounded-2xl overflow-hidden group">
+//       <CardHeader className="bg-secondary/10 border-b border-secondary/20">
+//         <CardTitle className="text-xl text-foreground group-hover:text-secondary transition-colors">
+//           SARAL System
+//         </CardTitle>
+//       </CardHeader>
+//       <CardContent className="p-6">
+//         <p className="text-muted-foreground mb-4">Restaurant management platform</p>
+//         <div className="flex flex-wrap gap-2 mb-4">
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             Next.js
+//           </Badge>
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             Node.js
+//           </Badge>
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             Stripe
+//           </Badge>
+//         </div>
+//         <a
+//           href="/glabs"
+//           className="text-secondary hover:text-secondary/80 font-semibold text-sm flex items-center gap-1"
+//         >
+//           View Project →
+//         </a>
+//       </CardContent>
+//     </Card>
+//     <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card rounded-2xl overflow-hidden group">
+//       <CardHeader className="bg-primary/10 border-b border-primary/20">
+//         <CardTitle className="text-xl text-foreground group-hover:text-primary transition-colors">
+//           Portfolio Manager
+//         </CardTitle>
+//       </CardHeader>
+//       <CardContent className="p-6">
+//         <p className="text-muted-foreground mb-4">Dynamic admin dashboard</p>
+//         <div className="flex flex-wrap gap-2 mb-4">
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             Next.js 16
+//           </Badge>
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             Neon DB
+//           </Badge>
+//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
+//             Tailwind
+//           </Badge>
+//         </div>
+//         <a
+//           href="/glabs"
+//           className="text-primary hover:text-primary/80 font-semibold text-sm flex items-center gap-1"
+//         >
+//           View Project →
+//         </a>
+//       </CardContent>
+//     </Card>
+//     {/* Add more project cards as needed */}
+//   </div>
+// );
 
 function TrekModal({
   trek,
@@ -416,6 +509,32 @@ export default function Home() {
                 </Card>
               ))}
             </AnimateStagger>
+          </div>
+        </div>
+      </section>
+
+      {/* My Projects & Experiments */}
+      <section id="projects" className="relative py-24 bg-muted">
+        <div className="container mx-auto px-4">
+          <AnimateOnScroll animation="fadeIn">
+            <div className="text-center mb-4">
+              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 mb-4">
+                My Work
+              </Badge>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground">Projects & Experiments</h2>
+            </div>
+            <div className="w-20 h-1 bg-primary mx-auto mb-12 rounded-full" />
+          </AnimateOnScroll>
+
+          <AnimateOnScroll animation="slideUp" delay={0.3} className="max-w-6xl mx-auto">
+            <p className="text-center text-lg text-muted-foreground mb-12">
+              A collection of innovative projects spanning educational platforms, consulting tools, and interactive
+              portfolios.
+            </p>
+          </AnimateOnScroll>
+
+          <div className="max-w-6xl mx-auto">
+            <ProjectsShowcase />
           </div>
         </div>
       </section>
