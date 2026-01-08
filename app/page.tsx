@@ -271,20 +271,28 @@ export default function Home() {
 
   const workExperience = [
     {
-      title: "Head of SARAL",
-      company: "Bitflux Technologies Pvt. Ltd.",
-      period: "Oct 2024 - Present",
+      title: "CEO",
+      company: "Aakar Academy",
+      period: "Nov 2025 - Present",
       location: "Chitwan, Nepal",
       description:
-        "Leading the development and implementation of SARAL, an innovative restaurant management system. Overseeing product strategy, client onboarding, and continuous improvement of the platform to streamline restaurant operations across Nepal.",
+        "Leading Aakar Academy as Chief Executive Officer, driving strategic vision and operational excellence. Overseeing curriculum development, institutional growth, student success initiatives, and team management to establish the academy as a leading educational institution in Nepal.",
+    },
+    {
+      title: "Head of SARAL",
+      company: "Bitflux Technologies Pvt. Ltd.",
+      period: "Oct 2024 - Sep 2025",
+      location: "Chitwan, Nepal",
+      description:
+        "Led the development and implementation of SARAL, an innovative restaurant management system. Oversaw product strategy, client onboarding, and continuous improvement of the platform to streamline restaurant operations across Nepal.",
     },
     {
       title: "Business Development Officer",
       company: "Bitflux Technologies Pvt. Ltd.",
-      period: "Aug 2024 - Present",
+      period: "Aug 2024 - Sep 2025",
       location: "Chitwan, Nepal",
       description:
-        "Spearheading business development initiatives to expand the company's market presence. Developing strategic partnerships, identifying growth opportunities, and implementing effective marketing strategies to increase brand awareness and customer acquisition.",
+        "Spearheaded business development initiatives to expand the company's market presence. Developed strategic partnerships, identified growth opportunities, and implemented effective marketing strategies to increase brand awareness and customer acquisition.",
     },
     {
       title: "Banking Intern",
