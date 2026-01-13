@@ -147,7 +147,7 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-feature-settings: "rlig" 1, "calt" 1;
-  cursor: none;
+  /* Removed cursor: none to show default cursor */
 }
 
 @media (hover: none) {
@@ -555,10 +555,9 @@ body {
   }
 }
 
+/* Removed cursor: none !important rule that was hiding cursor on hover */
 @media (hover: hover) and (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
+  /* Default cursor now visible */
 }
 
 @media (hover: none) or (pointer: coarse) {

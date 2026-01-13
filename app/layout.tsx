@@ -7,7 +7,6 @@ import { Navigation } from "@/components/navigation"
 import { SocialLinks } from "@/components/social-links"
 import { ProgressIndicator } from "@/components/progress-indicator"
 import { AccessibilitySkipLinks } from "@/components/accessibility-skip-links"
-import { CursorSpotlight } from "@/components/cursor-spotlight"
 import { DashainAnimation } from "@/components/dashain-animation"
 
 const poppins = Poppins({
@@ -171,7 +170,6 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <AccessibilitySkipLinks />
           <ProgressIndicator />
-          <CursorSpotlight />
           <DashainAnimation />
           <Navigation />
           <main className="min-h-screen">{children}</main>
