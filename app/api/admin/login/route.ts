@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     }
 
     const users = await sql`
-      SELECT id, username, role FROM admin_users 
+      SELECT id, username FROM admin_users 
       WHERE username = ${username} AND password_hash = ${password} AND is_active = true
     `
 
