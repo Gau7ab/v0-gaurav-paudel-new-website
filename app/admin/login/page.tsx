@@ -22,7 +22,7 @@ export default function AdminLoginPage() {
     setIsLoading(true)
     setError("")
 
-    console.log("[v0] Attempting login for:", email)
+
     try {
       const response = await fetch("/api/admin/login", {
         method: "POST",
@@ -34,14 +34,14 @@ export default function AdminLoginPage() {
       const data = await response.json()
 
       if (response.ok) {
-        console.log("[v0] Login successful, redirecting to dashboard")
+
         window.location.href = "/admin/dashboard"
       } else {
-        console.log("[v0] Login failed:", data.error)
+
         setError(data.error || "Authentication failed. Please check your credentials.")
       }
     } catch (err) {
-      console.log("[v0] Fetch error during login:", err)
+
       setError("An error occurred during login. Please try again.")
     } finally {
       setIsLoading(false)
