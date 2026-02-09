@@ -1,126 +1,96 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Plus, Trash2 } from 'lucide-react'
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Plus, Trash2, Loader2 } from "lucide-react"
 
-interface Education {
-  id: string
-  year: string
-  degree: string
-  school: string
-  location: string
-}
+interface Education { id: number; degree: string; institution: string; location: string; start_date: string; end_date: string; description: string }
 
 export function EducationEditor() {
-  const [education, setEducation] = useState<Education[]>([])
-  const [loading, setLoading] = useState(false)
-  const [newEdu, setNewEdu] = useState({
-    year: '',
-    degree: '',
-    school: '',
-    location: '',
-  })
+  const [items, setItems] = useState<Education[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [adding, setAdding] = useState(false)
+  const [form, setForm] = useState({ degree: "", institution: "", location: "", start_date: "", end_date: "", description: "" })
 
   useEffect(() => {
-    fetchEducation()
+    fetch("/api/admin/content?table=education")
+      .then(r => r.json())
+      .then(res => { setItems(res.data || []); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [])
 
-  const fetchEducation = async () => {
-    try {
-      const res = await fetch('/api/admin/education')
-      const data = await res.json()
-      setEducation(data)
-    } catch (error) {
-      console.error('Error fetching education:', error)
+  async function addItem() {
+    if (!form.degree || !form.institution) return
+    setAdding(true)
+    const res = await fetch("/api/admin/content", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table: "education", ...form, sort_order: items.length }),
+    })
+    if (res.ok) {
+      const result = await res.json()
+      setItems([...items, result.data])
+      setForm({ degree: "", institution: "", location: "", start_date: "", end_date: "", description: "" })
+      setShowForm(false)
     }
+    setAdding(false)
   }
 
-  const handleAddEducation = async () => {
-    if (!newEdu.year || !newEdu.degree || !newEdu.school) return
-
-    setLoading(true)
-    try {
-      const res = await fetch('/api/admin/education', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newEdu),
-      })
-
-      if (res.ok) {
-        setNewEdu({ year: '', degree: '', school: '', location: '' })
-        fetchEducation()
-      }
-    } catch (error) {
-      console.error('Error adding education:', error)
-    }
-    setLoading(false)
+  async function deleteItem(id: number) {
+    if (!confirm("Delete this entry?")) return
+    const res = await fetch(`/api/admin/content?table=education&id=${id}`, { method: "DELETE" })
+    if (res.ok) setItems(items.filter(i => i.id !== id))
   }
 
-  const handleDeleteEducation = async (id: string) => {
-    if (!confirm('Delete this education entry?')) return
-
-    try {
-      await fetch(`/api/admin/education?id=${id}`, { method: 'DELETE' })
-      fetchEducation()
-    } catch (error) {
-      console.error('Error deleting education:', error)
-    }
-  }
+  if (loading) return <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin" /></div>
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Education Management</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Add New Education Form */}
-        <div className="space-y-3 p-4 border rounded-lg bg-card/50">
-          <h3 className="font-semibold">Add New Education</h3>
-          <Input
-            placeholder="Year (e.g., 2023-2024)"
-            value={newEdu.year}
-            onChange={(e) => setNewEdu({ ...newEdu, year: e.target.value })}
-          />
-          <Input
-            placeholder="Degree"
-            value={newEdu.degree}
-            onChange={(e) => setNewEdu({ ...newEdu, degree: e.target.value })}
-          />
-          <Input
-            placeholder="School/University"
-            value={newEdu.school}
-            onChange={(e) => setNewEdu({ ...newEdu, school: e.target.value })}
-          />
-          <Input
-            placeholder="Location"
-            value={newEdu.location}
-            onChange={(e) => setNewEdu({ ...newEdu, location: e.target.value })}
-          />
-          <Button onClick={handleAddEducation} disabled={loading} className="w-full">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Education
-          </Button>
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Education</h2>
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2"><Plus className="h-4 w-4" /> Add</Button>
+      </div>
 
-        {/* Education List */}
-        <div className="space-y-2">
-          {education.map((edu) => (
-            <div key={edu.id} className="flex items-start justify-between p-4 border rounded-lg">
-              <div className="flex-1">
-                <p className="font-bold">{edu.degree}</p>
-                <p className="text-primary font-semibold">{edu.school}</p>
-                <p className="text-sm text-muted-foreground">{edu.year} • {edu.location}</p>
-              </div>
-              <Button variant="destructive" size="sm" onClick={() => handleDeleteEducation(edu.id)}>
-                <Trash2 className="w-4 h-4" />
-              </Button>
+      {showForm && (
+        <Card className="border-primary/20 border-2">
+          <CardContent className="pt-6 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1"><Label>Degree</Label><Input value={form.degree} onChange={e => setForm({ ...form, degree: e.target.value })} placeholder="MBA, BBA..." /></div>
+              <div className="space-y-1"><Label>Institution</Label><Input value={form.institution} onChange={e => setForm({ ...form, institution: e.target.value })} /></div>
+              <div className="space-y-1"><Label>Location</Label><Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} /></div>
+              <div className="space-y-1"><Label>Start Date</Label><Input value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} placeholder="2022" /></div>
+              <div className="space-y-1"><Label>End Date</Label><Input value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} placeholder="2024" /></div>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+            <div className="space-y-1"><Label>Description</Label><Input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Optional details" /></div>
+            <div className="flex gap-2">
+              <Button onClick={addItem} disabled={adding}>{adding ? "Saving..." : "Save"}</Button>
+              <Button variant="outline" onClick={() => setShowForm(false)} className="bg-transparent">Cancel</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {items.map(item => (
+        <Card key={item.id}>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-bold text-lg">{item.degree}</p>
+                <p className="text-primary font-semibold">{item.institution}</p>
+                <p className="text-sm text-muted-foreground">{item.start_date} - {item.end_date} {item.location && `| ${item.location}`}</p>
+                {item.description && <p className="text-sm mt-1 text-muted-foreground">{item.description}</p>}
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => deleteItem(item.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+
+      {items.length === 0 && !showForm && <p className="text-center text-muted-foreground py-8">No education added yet.</p>}
+    </div>
   )
 }

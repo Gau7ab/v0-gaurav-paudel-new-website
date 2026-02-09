@@ -30,105 +30,16 @@ import { HeroProfile } from "@/components/hero-profile"
 import { CloudEffect } from "@/components/cloud-effect"
 import { SnowEffect } from "@/components/snow-effect"
 import { ProjectsShowcase } from "@/components/projects-showcase"
+import { usePortfolioData } from "@/hooks/use-portfolio-data"
 
-// Placeholder for the ProjectsShowcase component, assuming it's in a separate file
-// and needs to be imported. For this merge, we'll assume it's available.
-// If ProjectsShowcase were in the same file, it would be defined here.
-// For now, we'll simulate its presence.
-// const ProjectsShowcase = () => (
-//   <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-//     {/* Example project cards - replace with actual ProjectsShowcase content */}
-//     <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card rounded-2xl overflow-hidden group">
-//       <CardHeader className="bg-primary/10 border-b border-primary/20">
-//         <CardTitle className="text-xl text-foreground group-hover:text-primary transition-colors">
-//           Aakar Academy
-//         </CardTitle>
-//       </CardHeader>
-//       <CardContent className="p-6">
-//         <p className="text-muted-foreground mb-4">Educational platform with course management</p>
-//         <div className="flex flex-wrap gap-2 mb-4">
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             Next.js
-//           </Badge>
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             React
-//           </Badge>
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             PostgreSQL
-//           </Badge>
-//         </div>
-//         <a
-//           href="/glabs"
-//           className="text-primary hover:text-primary/80 font-semibold text-sm flex items-center gap-1"
-//         >
-//           View Project →
-//         </a>
-//       </CardContent>
-//     </Card>
-//     <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card rounded-2xl overflow-hidden group">
-//       <CardHeader className="bg-secondary/10 border-b border-secondary/20">
-//         <CardTitle className="text-xl text-foreground group-hover:text-secondary transition-colors">
-//           SARAL System
-//         </CardTitle>
-//       </CardHeader>
-//       <CardContent className="p-6">
-//         <p className="text-muted-foreground mb-4">Restaurant management platform</p>
-//         <div className="flex flex-wrap gap-2 mb-4">
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             Next.js
-//           </Badge>
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             Node.js
-//           </Badge>
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             Stripe
-//           </Badge>
-//         </div>
-//         <a
-//           href="/glabs"
-//           className="text-secondary hover:text-secondary/80 font-semibold text-sm flex items-center gap-1"
-//         >
-//           View Project →
-//         </a>
-//       </CardContent>
-//     </Card>
-//     <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 bg-card rounded-2xl overflow-hidden group">
-//       <CardHeader className="bg-primary/10 border-b border-primary/20">
-//         <CardTitle className="text-xl text-foreground group-hover:text-primary transition-colors">
-//           Portfolio Manager
-//         </CardTitle>
-//       </CardHeader>
-//       <CardContent className="p-6">
-//         <p className="text-muted-foreground mb-4">Dynamic admin dashboard</p>
-//         <div className="flex flex-wrap gap-2 mb-4">
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             Next.js 16
-//           </Badge>
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             Neon DB
-//           </Badge>
-//           <Badge variant="outline" className="bg-background/50 text-foreground border-secondary/30 text-xs">
-//             Tailwind
-//           </Badge>
-//         </div>
-//         <a
-//           href="/glabs"
-//           className="text-primary hover:text-primary/80 font-semibold text-sm flex items-center gap-1"
-//         >
-//           View Project →
-//         </a>
-//       </CardContent>
-//     </Card>
-//     {/* Add more project cards as needed */}
-//   </div>
-// );
+
 
 function TrekModal({
   trek,
   isOpen,
   onClose,
 }: {
-  trek: (typeof treksData)[0] | null
+  trek: any
   isOpen: boolean
   onClose: () => void
 }) {
@@ -174,200 +85,72 @@ function TrekModal({
   )
 }
 
-const treksData = [
-  {
-    name: "Annapurna Base Camp",
-    image: "/images/abc4.jpeg",
-    description: "Gateway to the Annapurna Sanctuary",
-    elevation: "4,130m",
-    experience:
-      "Annapurna Base Camp Trek is one of the most popular trekking routes in Nepal, leading to the base of Annapurna I (8,091 m). The trail passes through traditional Gurung villages, dense rhododendron forests, glaciers, and high-altitude landscapes, ending in a natural Himalayan amphitheater.",
-  },
-  {
-    name: "Annapurna North Basecamp",
-    image: "/images/annapurna-20north-20basecamp.jpg",
-    description: "Remote and less-explored route to the north face",
-    elevation: "4,190m",
-    experience:
-      "Annapurna North Base Camp Trek is a remote and less-explored route to the north face of Annapurna I. Accessed via Narchyang in Myagdi district, the trek includes alpine terrain, glacier views, and the sacred Panchakunda Lake. Camping and strong physical endurance are required.",
-  },
-  {
-    name: "Mardi Himal",
-    image: "/images/mardi-himal2.jpeg",
-    description: "Scenic alternative to ABC with dramatic views",
-    elevation: "4,500m",
-    experience:
-      "Mardi Himal Trek is a scenic and quieter alternative to the Annapurna Base Camp trek. The route follows narrow ridgelines with dramatic views of Machhapuchhre (Fishtail), Annapurna South, and Hiunchuli, making it ideal for trekkers seeking solitude and mountain views.",
-  },
-  {
-    name: "Gosainkunda",
-    image: "/images/gosainkunda.jpeg",
-    description: "Sacred lake at high altitude",
-    elevation: "4,380m",
-    experience:
-      "Gosaikunda Lake Trek is a high-altitude pilgrimage and trekking route in Langtang National Park. The sacred alpine lake holds religious significance for Hindus and Buddhists and offers rugged trails, rocky landscapes, and seasonal snow conditions.",
-  },
-  {
-    name: "Poon Hill",
-    image: "/images/poon-hill.jpeg",
-    description: "Classic sunrise viewpoint",
-    elevation: "3,210m",
-    experience:
-      "Poon Hill Trek is a short and beginner-friendly trek famous for its sunrise views over the Annapurna and Dhaulagiri mountain ranges. It is one of the most accessible trekking routes in Nepal and ideal for first-time trekkers.",
-  },
-  {
-    name: "Tilicho Lake",
-    image: "/images/tilicho.jpeg",
-    description: "One of the highest lakes in the world",
-    elevation: "4,919m",
-    experience:
-      "Tilicho Lake Trek leads to one of the world’s highest alpine lakes. The route features rugged high-altitude terrain, landslide-prone sections, and dramatic Himalayan scenery. The trek is commonly combined with the Annapurna Circuit.",
-  },
-  {
-    name: "Khumai Danda",
-    image: "/images/khumai-danda.jpeg",
-    description: "Panoramic viewpoint in Kaski",
-    elevation: "3,245m",
-    experience:
-      "Khumai Danda Trek is a short and emerging trekking route near Pokhara, known for sunrise and sunset views of Machhapuchhre, Annapurna South, and Lamjung Himal. It is ideal for weekend hikes and beginner trekkers.",
-  },
-]
+// Trek data is now fetched dynamically from the database via usePortfolioData hook
 
 export default function Home() {
-  const [selectedTrek, setSelectedTrek] = useState<(typeof treksData)[0] | null>(null)
+  const [selectedTrek, setSelectedTrek] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const portfolio = usePortfolioData()
 
-  const handleTrekClick = (trek: (typeof treksData)[0]) => {
+  const handleTrekClick = (trek: any) => {
     setSelectedTrek(trek)
     setIsModalOpen(true)
   }
 
-  const education = [
-    {
-      year: "24",
-      degree: "Master in Business Administration (MBA)",
-      school: "Boston International College",
-      location: "Bharatpur-10, Nepal",
-    },
-    {
-      year: "19",
-      degree: "Bachelor in Business Administration (BBA)",
-      school: "Saptagandaki Multiple Campus",
-      location: "Bharatpur-10, Chitwan",
-    },
-    {
-      year: "16",
-      degree: "Secondary Level (+2) in Management",
-      school: "Eden Garden English Secondary School",
-      location: "Bharatpur-10, Chitwan",
-    },
-    {
-      year: "SLC",
-      degree: "SLC",
-      school: "Madi Secondary School",
-      location: "Madi-03, Chitwan",
-    },
-  ]
+  // Map DB data to the format the page expects
+  const education = portfolio.education.map((edu: any) => ({
+    year: edu.start_date?.slice(-2) || edu.start_date || "",
+    degree: edu.degree,
+    school: edu.institution,
+    location: edu.location || "",
+  }))
 
-  const workExperience = [
-    {
-      title: "CEO",
-      company: "Aakar Academy",
-      period: "Nov 2025 - Present",
-      location: "Chitwan, Nepal",
-      description:
-        "Leading Aakar Academy as Chief Executive Officer, driving strategic vision and operational excellence. Overseeing curriculum development, institutional growth, student success initiatives, and team management to establish the academy as a leading educational institution in Nepal.",
-    },
-    {
-      title: "Head of SARAL",
-      company: "Bitflux Technologies Pvt. Ltd.",
-      period: "Oct 2024 - Sep 2025",
-      location: "Chitwan, Nepal",
-      description:
-        "Led the development and implementation of SARAL, an innovative restaurant management system. Oversaw product strategy, client onboarding, and continuous improvement of the platform to streamline restaurant operations across Nepal.",
-    },
-    {
-      title: "Business Development Officer",
-      company: "Bitflux Technologies Pvt. Ltd.",
-      period: "Aug 2024 - Sep 2025",
-      location: "Chitwan, Nepal",
-      description:
-        "Spearheaded business development initiatives to expand the company's market presence. Developed strategic partnerships, identified growth opportunities, and implemented effective marketing strategies to increase brand awareness and customer acquisition.",
-    },
-    {
-      title: "Banking Intern",
-      company: "Muktinath Bikas Bank Limited",
-      period: "May - Jul 2024",
-      location: "Nepal",
-      description:
-        "Gained comprehensive exposure to banking operations including customer service, account management, and financial analysis. Assisted in processing transactions, preparing financial reports, and implementing customer relationship management strategies. Developed a strong understanding of banking regulations and financial services.",
-    },
-  ]
+  const workExperience = portfolio.experience.map((exp: any) => ({
+    title: exp.title,
+    company: exp.company,
+    period: `${exp.start_date}${exp.is_current ? " - Present" : exp.end_date ? ` - ${exp.end_date}` : ""}`,
+    location: exp.location || "",
+    description: exp.description || "",
+  }))
 
   const leadershipExperience = [
     {
       title: "Team Leader & Navigator",
-      description:
-        "Led multiple trekking expeditions, making critical decisions on routes, safety, and group dynamics in challenging mountain environments.",
+      description: "Led multiple trekking expeditions, making critical decisions on routes, safety, and group dynamics in challenging mountain environments.",
       icon: Compass,
     },
     {
       title: "Community Organizer",
-      description:
-        "Organized local youth initiatives and environmental awareness programs, bringing together diverse groups for common goals.",
+      description: "Organized local youth initiatives and environmental awareness programs, bringing together diverse groups for common goals.",
       icon: Users,
     },
     {
       title: "Problem Solver",
-      description:
-        "Developed strong analytical and creative problem-solving skills through academic projects and real-world challenges in the mountains.",
+      description: "Developed strong analytical and creative problem-solving skills through academic projects and real-world challenges in the mountains.",
       icon: Lightbulb,
     },
   ]
 
-  const achievements = [
-    {
-      icon: Mountain,
-      title: "7 Major Treks Completed",
-      description: "Successfully completed treks to iconic destinations across Nepal's Himalayan region.",
-    },
-    {
-      icon: Award,
-      title: "Academic Excellence",
-      description: "Maintaining strong academic performance while pursuing passion for adventure and exploration.",
-    },
-    {
-      icon: Star,
-      title: "Youth Leadership",
-      description: "Recognized for leadership in organizing community events and youth programs.",
-    },
-    {
-      icon: Sparkles,
-      title: "Cultural Ambassador",
-      description: "Promoting Nepali culture and natural heritage through trekking experiences and storytelling.",
-    },
-  ]
+  const achievementIcons = [Mountain, Award, Star, Sparkles]
+  const achievements = portfolio.achievements.map((a: any, i: number) => ({
+    icon: achievementIcons[i % achievementIcons.length],
+    title: a.title,
+    description: a.description || "",
+  }))
 
-  const skills = [
-    { name: "Navigation & Route Planning", category: "Trekking & Adventure" },
-    { name: "High Altitude Trekking", category: "Trekking & Adventure" },
-    { name: "Wilderness Survival", category: "Trekking & Adventure" },
-    { name: "Photography", category: "Trekking & Adventure" },
-    { name: "Team Leadership", category: "Leadership & Teamwork" },
-    { name: "Decision Making", category: "Leadership & Teamwork" },
-    { name: "Group Coordination", category: "Leadership & Teamwork" },
-    { name: "Crisis Management", category: "Leadership & Teamwork" },
-    { name: "Business Administration", category: "Management & Academic" },
-    { name: "Organizational Behavior", category: "Management & Academic" },
-    { name: "Strategic Planning", category: "Management & Academic" },
-    { name: "Project Management", category: "Management & Academic" },
-    { name: "Digital Literacy", category: "Digital & Personal Growth" },
-    { name: "Social Media", category: "Digital & Personal Growth" },
-    { name: "Adaptability", category: "Digital & Personal Growth" },
-    { name: "Cultural Awareness", category: "Digital & Personal Growth" },
-  ]
+  const skills = portfolio.skills.map((s: any) => ({
+    name: s.name,
+    category: s.category,
+  }))
 
-  const treks = treksData
+  // Map treks from DB or fallback — use image_url for DB, image for legacy
+  const treks = portfolio.treks.map((t: any) => ({
+    name: t.name,
+    image: t.image_url || t.image || "/placeholder.svg",
+    description: t.description || "",
+    elevation: t.altitude || "",
+    experience: t.description || "",
+  }))
 
   return (
     <div className="min-h-screen bg-background">
@@ -416,7 +199,7 @@ export default function Home() {
 
           <AnimateOnScroll animation="slideUp" delay={0.4} className="mb-8">
             <p className="text-xl md:text-2xl text-foreground/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-              MBA Scholar & Himalayan Trekker Exploring Nepal's Mountains
+              {portfolio.about?.subtitle || "MBA Scholar & Himalayan Trekker Exploring Nepal's Mountains"}
             </p>
           </AnimateOnScroll>
 
@@ -444,7 +227,7 @@ export default function Home() {
 
         <div className="container mx-auto px-4 pt-8">
           <AnimateOnScroll animation="fadeIn">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">About Om Prakash Paudel</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 text-foreground">About {portfolio.about?.title || "Om Prakash Paudel"}</h2>
             <div className="w-20 h-1 bg-primary mx-auto mb-12 rounded-full" />
           </AnimateOnScroll>
 

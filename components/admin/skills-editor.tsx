@@ -1,128 +1,85 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Plus, Edit2, Trash2, Save, X } from 'lucide-react'
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Plus, Trash2, Loader2 } from "lucide-react"
 
-interface Skill {
-  id: string
-  name: string
-  category: string
-  proficiency_level: string
-}
+interface Skill { id: number; name: string; category: string; proficiency: number; sort_order: number }
 
 export function SkillsEditor() {
   const [skills, setSkills] = useState<Skill[]>([])
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [newSkill, setNewSkill] = useState({ name: '', category: '', proficiency_level: 'Intermediate' })
+  const [loading, setLoading] = useState(true)
+  const [adding, setAdding] = useState(false)
+  const [form, setForm] = useState({ name: "", category: "Technical", proficiency: 80 })
 
   useEffect(() => {
-    fetchSkills()
+    fetch("/api/admin/content?table=skills")
+      .then(r => r.json())
+      .then(res => { setSkills(res.data || []); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [])
 
-  const fetchSkills = async () => {
-    try {
-      const res = await fetch('/api/admin/skills')
-      const data = await res.json()
-      setSkills(data)
-    } catch (error) {
-      console.error('Error fetching skills:', error)
+  async function addSkill() {
+    if (!form.name) return
+    setAdding(true)
+    const res = await fetch("/api/admin/content", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table: "skills", ...form, sort_order: skills.length }),
+    })
+    if (res.ok) {
+      const result = await res.json()
+      setSkills([...skills, result.data])
+      setForm({ name: "", category: "Technical", proficiency: 80 })
     }
+    setAdding(false)
   }
 
-  const handleAddSkill = async () => {
-    if (!newSkill.name || !newSkill.category) return
-
-    setLoading(true)
-    try {
-      const res = await fetch('/api/admin/skills', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSkill),
-      })
-      
-      if (res.ok) {
-        setNewSkill({ name: '', category: '', proficiency_level: 'Intermediate' })
-        fetchSkills()
-      }
-    } catch (error) {
-      console.error('Error adding skill:', error)
-    }
-    setLoading(false)
+  async function deleteSkill(id: number) {
+    if (!confirm("Delete this skill?")) return
+    const res = await fetch(`/api/admin/content?table=skills&id=${id}`, { method: "DELETE" })
+    if (res.ok) setSkills(skills.filter(s => s.id !== id))
   }
 
-  const handleDeleteSkill = async (id: string) => {
-    if (!confirm('Delete this skill?')) return
+  if (loading) return <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin" /></div>
 
-    try {
-      await fetch(`/api/admin/skills?id=${id}`, { method: 'DELETE' })
-      fetchSkills()
-    } catch (error) {
-      console.error('Error deleting skill:', error)
-    }
-  }
+  const categories = [...new Set(skills.map(s => s.category))]
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <span>Skills Management</span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Add New Skill Form */}
-        <div className="space-y-3 p-4 border rounded-lg bg-card/50">
-          <h3 className="font-semibold">Add New Skill</h3>
-          <Input
-            placeholder="Skill name (e.g., React)"
-            value={newSkill.name}
-            onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
-          />
-          <Input
-            placeholder="Category (e.g., Frontend)"
-            value={newSkill.category}
-            onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
-          />
-          <select
-            className="w-full px-3 py-2 border rounded-md bg-background"
-            value={newSkill.proficiency_level}
-            onChange={(e) => setNewSkill({ ...newSkill, proficiency_level: e.target.value })}
-          >
-            <option>Beginner</option>
-            <option>Intermediate</option>
-            <option>Advanced</option>
-            <option>Expert</option>
-          </select>
-          <Button onClick={handleAddSkill} disabled={loading} className="w-full">
-            <Plus className="w-4 h-4 mr-2" />
-            Add Skill
-          </Button>
-        </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader><CardTitle>Add New Skill</CardTitle></CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-3 items-end">
+            <div className="space-y-1 flex-1 min-w-[150px]"><Label>Name</Label><Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="React, Python..." /></div>
+            <div className="space-y-1 min-w-[120px]"><Label>Category</Label><Input value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} placeholder="Technical" /></div>
+            <div className="space-y-1 w-24"><Label>Level %</Label><Input type="number" min={0} max={100} value={form.proficiency} onChange={e => setForm({ ...form, proficiency: Number(e.target.value) })} /></div>
+            <Button onClick={addSkill} disabled={adding} className="gap-2">{adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />} Add</Button>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Skills List */}
-        <div className="space-y-2">
-          {skills.map((skill) => (
-            <div key={skill.id} className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <p className="font-medium">{skill.name}</p>
-                <p className="text-sm text-muted-foreground">{skill.category} • {skill.proficiency_level}</p>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm">
-                  <Edit2 className="w-4 h-4" />
-                </Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDeleteSkill(skill.id)}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
+      {categories.map(cat => (
+        <Card key={cat}>
+          <CardHeader><CardTitle className="text-lg">{cat}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {skills.filter(s => s.category === cat).map(skill => (
+                <div key={skill.id} className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full text-sm">
+                  <span>{skill.name}</span>
+                  <span className="text-xs text-muted-foreground">({skill.proficiency}%)</span>
+                  <button onClick={() => deleteSkill(skill.id)} className="text-destructive hover:text-destructive/80"><Trash2 className="h-3 w-3" /></button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+          </CardContent>
+        </Card>
+      ))}
+
+      {skills.length === 0 && <p className="text-center text-muted-foreground py-8">No skills added yet.</p>}
+    </div>
   )
 }

@@ -10,6 +10,7 @@ import { ProjectsEditor } from '@/components/admin/projects-editor'
 import { AchievementsEditor } from '@/components/admin/achievements-editor'
 import { EducationEditor } from '@/components/admin/education-editor'
 import { AboutEditor } from '@/components/admin/about-editor'
+import { TreksEditor } from '@/components/admin/treks-editor'
 
 export function AdminDashboard() {
   const handleLogout = async () => {
@@ -36,13 +37,14 @@ export function AdminDashboard() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="about" className="w-full">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 w-full mb-8 bg-card/50 p-1 rounded-lg border border-primary/10">
+            <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 w-full mb-8 bg-card/50 p-1 rounded-lg border border-primary/10">
             <TabsTrigger value="about" className="text-xs md:text-sm">About</TabsTrigger>
             <TabsTrigger value="skills" className="text-xs md:text-sm">Skills</TabsTrigger>
             <TabsTrigger value="experience" className="text-xs md:text-sm">Experience</TabsTrigger>
             <TabsTrigger value="education" className="text-xs md:text-sm">Education</TabsTrigger>
             <TabsTrigger value="projects" className="text-xs md:text-sm">Projects</TabsTrigger>
             <TabsTrigger value="achievements" className="text-xs md:text-sm">Achievements</TabsTrigger>
+            <TabsTrigger value="treks" className="text-xs md:text-sm">Treks</TabsTrigger>
           </TabsList>
 
           <TabsContent value="about" className="space-y-4">
@@ -67,6 +69,10 @@ export function AdminDashboard() {
 
           <TabsContent value="achievements" className="space-y-4">
             <AchievementsEditor />
+          </TabsContent>
+
+          <TabsContent value="treks" className="space-y-4">
+            <TreksEditor />
           </TabsContent>
         </Tabs>
       </div>

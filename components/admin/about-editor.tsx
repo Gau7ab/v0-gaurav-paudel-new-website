@@ -1,111 +1,59 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Save } from 'lucide-react'
-
-interface AboutSection {
-  title: string
-  subtitle?: string
-  description: string
-  bio_text?: string
-}
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Save, Loader2 } from "lucide-react"
 
 export function AboutEditor() {
-  const [about, setAbout] = useState<AboutSection>({
-    title: '',
-    subtitle: '',
-    description: '',
-    bio_text: '',
-  })
-  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState({ id: 0, title: "", subtitle: "", description: "", image_url: "" })
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [msg, setMsg] = useState("")
 
   useEffect(() => {
-    fetchAboutSection()
+    fetch("/api/admin/content?table=about")
+      .then(r => r.json())
+      .then(res => { if (res.data?.[0]) setData(res.data[0]); setLoading(false) })
+      .catch(() => setLoading(false))
   }, [])
 
-  const fetchAboutSection = async () => {
-    try {
-      const res = await fetch('/api/admin/about')
-      const data = await res.json()
-      setAbout(data || { title: '', subtitle: '', description: '', bio_text: '' })
-    } catch (error) {
-      console.error('Error fetching about section:', error)
-    }
+  async function handleSave() {
+    setSaving(true)
+    setMsg("")
+    const method = data.id ? "PUT" : "POST"
+    const res = await fetch("/api/admin/content", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table: "about", ...data }),
+    })
+    if (res.ok) {
+      const result = await res.json()
+      if (result.data) setData(result.data)
+      setMsg("Saved!")
+    } else setMsg("Failed to save")
+    setSaving(false)
+    setTimeout(() => setMsg(""), 3000)
   }
 
-  const handleSave = async () => {
-    if (!about.title || !about.description) return
-
-    setLoading(true)
-    try {
-      await fetch('/api/admin/about', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(about),
-      })
-    } catch (error) {
-      console.error('Error saving about section:', error)
-    }
-    setLoading(false)
-  }
+  if (loading) return <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin" /></div>
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>About Me Section</CardTitle>
-      </CardHeader>
+    <Card>
+      <CardHeader><CardTitle>About Me</CardTitle></CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-3">
-          <div>
-            <label className="text-sm font-semibold">Title</label>
-            <Input
-              placeholder="Your Name or Main Title"
-              value={about.title}
-              onChange={(e) => setAbout({ ...about, title: e.target.value })}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold">Subtitle</label>
-            <Input
-              placeholder="Your tagline or subtitle"
-              value={about.subtitle || ''}
-              onChange={(e) => setAbout({ ...about, subtitle: e.target.value })}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold">Main Description</label>
-            <Textarea
-              placeholder="Main description about yourself"
-              value={about.description}
-              onChange={(e) => setAbout({ ...about, description: e.target.value })}
-              rows={4}
-              className="mt-1"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-semibold">Bio</label>
-            <Textarea
-              placeholder="Detailed bio information"
-              value={about.bio_text || ''}
-              onChange={(e) => setAbout({ ...about, bio_text: e.target.value })}
-              rows={4}
-              className="mt-1"
-            />
-          </div>
-
-          <Button onClick={handleSave} disabled={loading} className="w-full">
-            <Save className="w-4 h-4 mr-2" />
-            Save About Section
+        <div className="space-y-2"><Label>Title</Label><Input value={data.title} onChange={e => setData({ ...data, title: e.target.value })} placeholder="Your name" /></div>
+        <div className="space-y-2"><Label>Subtitle</Label><Input value={data.subtitle} onChange={e => setData({ ...data, subtitle: e.target.value })} placeholder="Your tagline" /></div>
+        <div className="space-y-2"><Label>Description</Label><Textarea value={data.description} onChange={e => setData({ ...data, description: e.target.value })} placeholder="About yourself..." rows={6} /></div>
+        <div className="space-y-2"><Label>Profile Image URL</Label><Input value={data.image_url || ""} onChange={e => setData({ ...data, image_url: e.target.value })} placeholder="https://..." /></div>
+        <div className="flex items-center gap-4">
+          <Button onClick={handleSave} disabled={saving} className="gap-2">
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save
           </Button>
+          {msg && <span className="text-sm text-muted-foreground">{msg}</span>}
         </div>
       </CardContent>
     </Card>
