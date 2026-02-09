@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
 
       if (response.ok) {
         console.log("[v0] Login successful, redirecting to dashboard")
-        router.push("/admin/dashboard")
+        window.location.href = "/admin/dashboard"
       } else {
         console.log("[v0] Login failed:", data.error)
         setError(data.error || "Authentication failed. Please check your credentials.")
