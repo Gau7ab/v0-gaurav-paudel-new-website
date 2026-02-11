@@ -1,106 +1,77 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { sql } from "@/lib/db"
+import { neon } from "@neondatabase/serverless"
 
-function isAuthed(request: NextRequest) {
-  return request.cookies.get("admin_session")?.value === "authenticated"
-}
+const sql = neon(process.env.DATABASE_URL!)
 
 // GET all content for a table
 export async function GET(request: NextRequest) {
-  if (!isAuthed(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-
   const table = request.nextUrl.searchParams.get("table")
-  
+
+  const allowed = ["about", "skills", "experience", "education", "projects", "achievements", "treks"]
+  if (!table || !allowed.includes(table)) {
+    return NextResponse.json({ error: "Invalid table" }, { status: 400 })
+  }
+
   try {
-    let data
-    switch (table) {
-      case "about":
-        data = await sql`SELECT * FROM portfolio_about ORDER BY id LIMIT 1`
-        break
-      case "skills":
-        data = await sql`SELECT * FROM portfolio_skills ORDER BY sort_order, id`
-        break
-      case "experience":
-        data = await sql`SELECT * FROM portfolio_experience ORDER BY sort_order, id`
-        break
-      case "education":
-        data = await sql`SELECT * FROM portfolio_education ORDER BY sort_order, id`
-        break
-      case "projects":
-        data = await sql`SELECT * FROM portfolio_projects ORDER BY sort_order, id`
-        break
-      case "achievements":
-        data = await sql`SELECT * FROM portfolio_achievements ORDER BY sort_order, id`
-        break
-      case "treks":
-        data = await sql`SELECT * FROM portfolio_treks ORDER BY sort_order, id`
-        break
-      default:
-        return NextResponse.json({ error: "Invalid table" }, { status: 400 })
-    }
+    const tableName = `portfolio_${table}`
+    const orderCol = table === "about" ? "id" : "sort_order"
+    const data = await sql(`SELECT * FROM ${tableName} ORDER BY ${orderCol}, id`)
     return NextResponse.json({ data })
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 })
+    console.error("Fetch error:", error)
+    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 })
   }
 }
 
 // POST create new item
 export async function POST(request: NextRequest) {
-  if (!isAuthed(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-
-  const { table, ...fields } = await request.json()
+  const body = await request.json()
+  const { table, ...fields } = body
 
   try {
     let result
     switch (table) {
       case "about":
-        result = await sql`
-          INSERT INTO portfolio_about (title, subtitle, description, image_url)
-          VALUES (${fields.title}, ${fields.subtitle}, ${fields.description}, ${fields.image_url || null})
-          RETURNING *
-        `
+        result = await sql(
+          "INSERT INTO portfolio_about (title, subtitle, description, image_url) VALUES ($1, $2, $3, $4) RETURNING *",
+          [fields.title, fields.subtitle, fields.description, fields.image_url || null]
+        )
         break
       case "skills":
-        result = await sql`
-          INSERT INTO portfolio_skills (name, category, proficiency, sort_order)
-          VALUES (${fields.name}, ${fields.category}, ${fields.proficiency || 80}, ${fields.sort_order || 0})
-          RETURNING *
-        `
+        result = await sql(
+          "INSERT INTO portfolio_skills (name, category, proficiency, sort_order) VALUES ($1, $2, $3, $4) RETURNING *",
+          [fields.name, fields.category, fields.proficiency || 80, fields.sort_order || 0]
+        )
         break
       case "experience":
-        result = await sql`
-          INSERT INTO portfolio_experience (title, company, location, start_date, end_date, description, is_current, sort_order)
-          VALUES (${fields.title}, ${fields.company}, ${fields.location || null}, ${fields.start_date}, ${fields.end_date || null}, ${fields.description}, ${fields.is_current || false}, ${fields.sort_order || 0})
-          RETURNING *
-        `
+        result = await sql(
+          "INSERT INTO portfolio_experience (title, company, location, start_date, end_date, description, is_current, sort_order) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
+          [fields.title, fields.company, fields.location || null, fields.start_date, fields.end_date || null, fields.description, fields.is_current || false, fields.sort_order || 0]
+        )
         break
       case "education":
-        result = await sql`
-          INSERT INTO portfolio_education (degree, institution, location, start_date, end_date, description, sort_order)
-          VALUES (${fields.degree}, ${fields.institution}, ${fields.location || null}, ${fields.start_date}, ${fields.end_date || null}, ${fields.description || null}, ${fields.sort_order || 0})
-          RETURNING *
-        `
+        result = await sql(
+          "INSERT INTO portfolio_education (degree, institution, location, start_date, end_date, description, sort_order) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+          [fields.degree, fields.institution, fields.location || null, fields.start_date, fields.end_date || null, fields.description || null, fields.sort_order || 0]
+        )
         break
       case "projects":
-        result = await sql`
-          INSERT INTO portfolio_projects (title, description, category, tech_stack, image_url, live_url, github_url, status, sort_order)
-          VALUES (${fields.title}, ${fields.description}, ${fields.category || null}, ${fields.tech_stack || null}, ${fields.image_url || null}, ${fields.live_url || null}, ${fields.github_url || null}, ${fields.status || 'completed'}, ${fields.sort_order || 0})
-          RETURNING *
-        `
+        result = await sql(
+          "INSERT INTO portfolio_projects (title, description, category, tech_stack, image_url, live_url, github_url, status, sort_order) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+          [fields.title, fields.description, fields.category || null, fields.tech_stack || null, fields.image_url || null, fields.live_url || null, fields.github_url || null, fields.status || "completed", fields.sort_order || 0]
+        )
         break
       case "achievements":
-        result = await sql`
-          INSERT INTO portfolio_achievements (title, description, date_achieved, icon, sort_order)
-          VALUES (${fields.title}, ${fields.description || null}, ${fields.date_achieved || null}, ${fields.icon || null}, ${fields.sort_order || 0})
-          RETURNING *
-        `
+        result = await sql(
+          "INSERT INTO portfolio_achievements (title, description, date_achieved, icon, sort_order) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+          [fields.title, fields.description || null, fields.date_achieved || null, fields.icon || null, fields.sort_order || 0]
+        )
         break
       case "treks":
-        result = await sql`
-          INSERT INTO portfolio_treks (name, location, altitude, duration, difficulty, description, image_url, date_completed, sort_order)
-          VALUES (${fields.name}, ${fields.location || null}, ${fields.altitude || null}, ${fields.duration || null}, ${fields.difficulty || null}, ${fields.description || null}, ${fields.image_url || null}, ${fields.date_completed || null}, ${fields.sort_order || 0})
-          RETURNING *
-        `
+        result = await sql(
+          "INSERT INTO portfolio_treks (name, location, altitude, duration, difficulty, description, image_url, date_completed, sort_order) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+          [fields.name, fields.location || null, fields.altitude || null, fields.duration || null, fields.difficulty || null, fields.description || null, fields.image_url || null, fields.date_completed || null, fields.sort_order || 0]
+        )
         break
       default:
         return NextResponse.json({ error: "Invalid table" }, { status: 400 })
@@ -114,54 +85,53 @@ export async function POST(request: NextRequest) {
 
 // PUT update item
 export async function PUT(request: NextRequest) {
-  if (!isAuthed(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-
-  const { table, id, ...fields } = await request.json()
+  const body = await request.json()
+  const { table, id, ...fields } = body
 
   try {
     let result
     switch (table) {
       case "about":
-        result = await sql`
-          UPDATE portfolio_about SET title=${fields.title}, subtitle=${fields.subtitle}, description=${fields.description}, image_url=${fields.image_url || null}, updated_at=NOW()
-          WHERE id=${id} RETURNING *
-        `
+        result = await sql(
+          "UPDATE portfolio_about SET title=$1, subtitle=$2, description=$3, image_url=$4, updated_at=NOW() WHERE id=$5 RETURNING *",
+          [fields.title, fields.subtitle, fields.description, fields.image_url || null, id]
+        )
         break
       case "skills":
-        result = await sql`
-          UPDATE portfolio_skills SET name=${fields.name}, category=${fields.category}, proficiency=${fields.proficiency || 80}, sort_order=${fields.sort_order || 0}
-          WHERE id=${id} RETURNING *
-        `
+        result = await sql(
+          "UPDATE portfolio_skills SET name=$1, category=$2, proficiency=$3, sort_order=$4 WHERE id=$5 RETURNING *",
+          [fields.name, fields.category, fields.proficiency || 80, fields.sort_order || 0, id]
+        )
         break
       case "experience":
-        result = await sql`
-          UPDATE portfolio_experience SET title=${fields.title}, company=${fields.company}, location=${fields.location || null}, start_date=${fields.start_date}, end_date=${fields.end_date || null}, description=${fields.description}, is_current=${fields.is_current || false}, sort_order=${fields.sort_order || 0}
-          WHERE id=${id} RETURNING *
-        `
+        result = await sql(
+          "UPDATE portfolio_experience SET title=$1, company=$2, location=$3, start_date=$4, end_date=$5, description=$6, is_current=$7, sort_order=$8 WHERE id=$9 RETURNING *",
+          [fields.title, fields.company, fields.location || null, fields.start_date, fields.end_date || null, fields.description, fields.is_current || false, fields.sort_order || 0, id]
+        )
         break
       case "education":
-        result = await sql`
-          UPDATE portfolio_education SET degree=${fields.degree}, institution=${fields.institution}, location=${fields.location || null}, start_date=${fields.start_date}, end_date=${fields.end_date || null}, description=${fields.description || null}, sort_order=${fields.sort_order || 0}
-          WHERE id=${id} RETURNING *
-        `
+        result = await sql(
+          "UPDATE portfolio_education SET degree=$1, institution=$2, location=$3, start_date=$4, end_date=$5, description=$6, sort_order=$7 WHERE id=$8 RETURNING *",
+          [fields.degree, fields.institution, fields.location || null, fields.start_date, fields.end_date || null, fields.description || null, fields.sort_order || 0, id]
+        )
         break
       case "projects":
-        result = await sql`
-          UPDATE portfolio_projects SET title=${fields.title}, description=${fields.description}, category=${fields.category || null}, tech_stack=${fields.tech_stack || null}, image_url=${fields.image_url || null}, live_url=${fields.live_url || null}, github_url=${fields.github_url || null}, status=${fields.status || 'completed'}, sort_order=${fields.sort_order || 0}
-          WHERE id=${id} RETURNING *
-        `
+        result = await sql(
+          "UPDATE portfolio_projects SET title=$1, description=$2, category=$3, tech_stack=$4, image_url=$5, live_url=$6, github_url=$7, status=$8, sort_order=$9 WHERE id=$10 RETURNING *",
+          [fields.title, fields.description, fields.category || null, fields.tech_stack || null, fields.image_url || null, fields.live_url || null, fields.github_url || null, fields.status || "completed", fields.sort_order || 0, id]
+        )
         break
       case "achievements":
-        result = await sql`
-          UPDATE portfolio_achievements SET title=${fields.title}, description=${fields.description || null}, date_achieved=${fields.date_achieved || null}, icon=${fields.icon || null}, sort_order=${fields.sort_order || 0}
-          WHERE id=${id} RETURNING *
-        `
+        result = await sql(
+          "UPDATE portfolio_achievements SET title=$1, description=$2, date_achieved=$3, icon=$4, sort_order=$5 WHERE id=$6 RETURNING *",
+          [fields.title, fields.description || null, fields.date_achieved || null, fields.icon || null, fields.sort_order || 0, id]
+        )
         break
       case "treks":
-        result = await sql`
-          UPDATE portfolio_treks SET name=${fields.name}, location=${fields.location || null}, altitude=${fields.altitude || null}, duration=${fields.duration || null}, difficulty=${fields.difficulty || null}, description=${fields.description || null}, image_url=${fields.image_url || null}, date_completed=${fields.date_completed || null}, sort_order=${fields.sort_order || 0}
-          WHERE id=${id} RETURNING *
-        `
+        result = await sql(
+          "UPDATE portfolio_treks SET name=$1, location=$2, altitude=$3, duration=$4, difficulty=$5, description=$6, image_url=$7, date_completed=$8, sort_order=$9 WHERE id=$10 RETURNING *",
+          [fields.name, fields.location || null, fields.altitude || null, fields.duration || null, fields.difficulty || null, fields.description || null, fields.image_url || null, fields.date_completed || null, fields.sort_order || 0, id]
+        )
         break
       default:
         return NextResponse.json({ error: "Invalid table" }, { status: 400 })
@@ -175,8 +145,6 @@ export async function PUT(request: NextRequest) {
 
 // DELETE item
 export async function DELETE(request: NextRequest) {
-  if (!isAuthed(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-
   const table = request.nextUrl.searchParams.get("table")
   const id = request.nextUrl.searchParams.get("id")
 
@@ -184,25 +152,16 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "Table and ID required" }, { status: 400 })
   }
 
+  const allowed = ["skills", "experience", "education", "projects", "achievements", "treks"]
+  if (!allowed.includes(table)) {
+    return NextResponse.json({ error: "Invalid table" }, { status: 400 })
+  }
+
   try {
-    switch (table) {
-      case "skills":
-        await sql`DELETE FROM portfolio_skills WHERE id=${id}`; break
-      case "experience":
-        await sql`DELETE FROM portfolio_experience WHERE id=${id}`; break
-      case "education":
-        await sql`DELETE FROM portfolio_education WHERE id=${id}`; break
-      case "projects":
-        await sql`DELETE FROM portfolio_projects WHERE id=${id}`; break
-      case "achievements":
-        await sql`DELETE FROM portfolio_achievements WHERE id=${id}`; break
-      case "treks":
-        await sql`DELETE FROM portfolio_treks WHERE id=${id}`; break
-      default:
-        return NextResponse.json({ error: "Invalid table" }, { status: 400 })
-    }
+    await sql(`DELETE FROM portfolio_${table} WHERE id = $1`, [id])
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error("Delete error:", error)
     return NextResponse.json({ error: "Failed to delete" }, { status: 500 })
   }
 }

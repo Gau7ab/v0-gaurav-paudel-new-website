@@ -1,5 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { sql } from "@/lib/db"
+import { neon } from "@neondatabase/serverless"
+
+const sql = neon(process.env.DATABASE_URL!)
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,25 +11,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Username and password required" }, { status: 400 })
     }
 
-    const users = await sql`
-      SELECT id, username FROM admin_users 
-      WHERE username = ${username} AND password = ${password}
-    `
+    const users = await sql(
+      "SELECT id, username FROM admin_users WHERE username = $1 AND password = $2",
+      [username, password]
+    )
 
     if (users.length === 0) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
     }
 
-    const response = NextResponse.json({ success: true })
-    response.cookies.set("admin_session", "authenticated", {
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      httpOnly: false,
-      sameSite: "lax",
-      path: "/",
-    })
-
-    return response
+    return NextResponse.json({ success: true, user: users[0].username })
   } catch (error) {
+    console.error("Login error:", error)
     return NextResponse.json({ error: "Server error" }, { status: 500 })
   }
 }
