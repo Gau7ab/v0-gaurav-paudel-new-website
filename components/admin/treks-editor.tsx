@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus, Trash2, Loader2, Mountain } from "lucide-react"
+import { Plus, Trash2, Loader2, Mountain, ImageIcon } from "lucide-react"
 
 interface Trek { id: number; name: string; location: string; altitude: string; duration: string; difficulty: string; description: string; image_url: string; date_completed: string }
 
@@ -74,7 +74,15 @@ export function TreksEditor() {
                 </select>
               </div>
               <div className="space-y-1"><Label>Date Completed</Label><Input value={form.date_completed} onChange={e => setForm({ ...form, date_completed: e.target.value })} placeholder="2024" /></div>
-              <div className="space-y-1 md:col-span-2"><Label>Image URL</Label><Input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." /></div>
+            </div>
+            <div className="space-y-1">
+              <Label>Image URL</Label>
+              <Input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." />
+              {form.image_url && (
+                <div className="mt-2 relative w-full max-w-xs h-40 rounded-lg overflow-hidden border border-border">
+                  <img src={form.image_url || "/placeholder.svg"} alt="Preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />
+                </div>
+              )}
             </div>
             <div className="space-y-1"><Label>Description</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} placeholder="Your trek experience..." /></div>
             <div className="flex gap-2">
@@ -88,8 +96,17 @@ export function TreksEditor() {
       {items.map(item => (
         <Card key={item.id}>
           <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
+            <div className="flex items-start gap-4">
+              {item.image_url ? (
+                <div className="w-28 h-20 rounded-lg overflow-hidden border border-border shrink-0">
+                  <img src={item.image_url || "/placeholder.svg"} alt={item.name} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = "none" }} />
+                </div>
+              ) : (
+                <div className="w-28 h-20 rounded-lg border border-dashed border-muted-foreground/30 flex items-center justify-center shrink-0">
+                  <ImageIcon className="h-6 w-6 text-muted-foreground/30" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
                 <p className="font-bold text-lg">{item.name}</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {item.location && <span className="text-xs px-2 py-0.5 bg-primary/10 rounded-full">{item.location}</span>}
@@ -97,10 +114,10 @@ export function TreksEditor() {
                   {item.duration && <span className="text-xs px-2 py-0.5 bg-primary/10 rounded-full">{item.duration}</span>}
                   {item.difficulty && <span className="text-xs px-2 py-0.5 bg-primary/10 rounded-full">{item.difficulty}</span>}
                 </div>
-                {item.description && <p className="text-sm mt-2 text-muted-foreground">{item.description}</p>}
+                {item.description && <p className="text-sm mt-2 text-muted-foreground line-clamp-2">{item.description}</p>}
                 {item.date_completed && <p className="text-xs text-muted-foreground mt-1">Completed: {item.date_completed}</p>}
               </div>
-              <Button variant="ghost" size="icon" onClick={() => deleteItem(item.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" onClick={() => deleteItem(item.id)} className="text-destructive shrink-0"><Trash2 className="h-4 w-4" /></Button>
             </div>
           </CardContent>
         </Card>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus, Trash2, Loader2, ExternalLink } from "lucide-react"
+import { Plus, Trash2, Loader2, ExternalLink, ImageIcon } from "lucide-react"
 
 interface Project { id: number; title: string; description: string; category: string; tech_stack: string; image_url: string; live_url: string; github_url: string; status: string }
 
@@ -71,9 +71,17 @@ export function ProjectsEditor() {
                   <option value="planned">Planned</option>
                 </select>
               </div>
-              <div className="space-y-1"><Label>Image URL</Label><Input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." /></div>
               <div className="space-y-1"><Label>Live URL</Label><Input value={form.live_url} onChange={e => setForm({ ...form, live_url: e.target.value })} /></div>
-              <div className="space-y-1 md:col-span-2"><Label>GitHub URL</Label><Input value={form.github_url} onChange={e => setForm({ ...form, github_url: e.target.value })} /></div>
+              <div className="space-y-1"><Label>GitHub URL</Label><Input value={form.github_url} onChange={e => setForm({ ...form, github_url: e.target.value })} /></div>
+            </div>
+            <div className="space-y-1">
+              <Label>Image URL</Label>
+              <Input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." />
+              {form.image_url && (
+                <div className="mt-2 relative w-full max-w-xs h-40 rounded-lg overflow-hidden border border-border">
+                  <img src={form.image_url || "/placeholder.svg"} alt="Preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />
+                </div>
+              )}
             </div>
             <div className="space-y-1"><Label>Description</Label><Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} /></div>
             <div className="flex gap-2">
@@ -87,21 +95,30 @@ export function ProjectsEditor() {
       {items.map(item => (
         <Card key={item.id}>
           <CardContent className="pt-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
+            <div className="flex items-start gap-4">
+              {item.image_url ? (
+                <div className="w-24 h-24 rounded-lg overflow-hidden border border-border shrink-0">
+                  <img src={item.image_url || "/placeholder.svg"} alt={item.title} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = "none" }} />
+                </div>
+              ) : (
+                <div className="w-24 h-24 rounded-lg border border-dashed border-muted-foreground/30 flex items-center justify-center shrink-0">
+                  <ImageIcon className="h-6 w-6 text-muted-foreground/30" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="font-bold text-lg">{item.title}</p>
                   {item.status && <span className="text-xs px-2 py-0.5 bg-primary/10 rounded-full">{item.status}</span>}
                 </div>
                 {item.category && <p className="text-xs text-muted-foreground">{item.category}</p>}
-                <p className="text-sm mt-1 text-muted-foreground">{item.description}</p>
+                <p className="text-sm mt-1 text-muted-foreground line-clamp-2">{item.description}</p>
                 {item.tech_stack && <div className="flex flex-wrap gap-1 mt-2">{item.tech_stack.split(",").map((t, i) => <span key={i} className="text-xs px-2 py-0.5 bg-primary/10 rounded-full">{t.trim()}</span>)}</div>}
                 <div className="flex gap-3 mt-2">
                   {item.live_url && <a href={item.live_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1"><ExternalLink className="h-3 w-3" /> Live</a>}
                   {item.github_url && <a href={item.github_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline">GitHub</a>}
                 </div>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => deleteItem(item.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+              <Button variant="ghost" size="icon" onClick={() => deleteItem(item.id)} className="text-destructive shrink-0"><Trash2 className="h-4 w-4" /></Button>
             </div>
           </CardContent>
         </Card>

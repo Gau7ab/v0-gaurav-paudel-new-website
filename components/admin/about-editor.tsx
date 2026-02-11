@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Save, Loader2 } from "lucide-react"
+import { Save, Loader2, ImageIcon } from "lucide-react"
 
 export function AboutEditor() {
   const [data, setData] = useState({ id: 0, title: "", subtitle: "", description: "", image_url: "" })
@@ -48,7 +48,20 @@ export function AboutEditor() {
         <div className="space-y-2"><Label>Title</Label><Input value={data.title} onChange={e => setData({ ...data, title: e.target.value })} placeholder="Your name" /></div>
         <div className="space-y-2"><Label>Subtitle</Label><Input value={data.subtitle} onChange={e => setData({ ...data, subtitle: e.target.value })} placeholder="Your tagline" /></div>
         <div className="space-y-2"><Label>Description</Label><Textarea value={data.description} onChange={e => setData({ ...data, description: e.target.value })} placeholder="About yourself..." rows={6} /></div>
-        <div className="space-y-2"><Label>Profile Image URL</Label><Input value={data.image_url || ""} onChange={e => setData({ ...data, image_url: e.target.value })} placeholder="https://..." /></div>
+        <div className="space-y-2">
+          <Label>Profile Image URL</Label>
+          <Input value={data.image_url || ""} onChange={e => setData({ ...data, image_url: e.target.value })} placeholder="https://..." />
+          {data.image_url && (
+            <div className="mt-2 relative w-32 h-32 rounded-lg overflow-hidden border border-border">
+              <img src={data.image_url || "/placeholder.svg"} alt="Profile preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />
+            </div>
+          )}
+          {!data.image_url && (
+            <div className="mt-2 w-32 h-32 rounded-lg border border-dashed border-muted-foreground/30 flex items-center justify-center">
+              <ImageIcon className="h-8 w-8 text-muted-foreground/30" />
+            </div>
+          )}
+        </div>
         <div className="flex items-center gap-4">
           <Button onClick={handleSave} disabled={saving} className="gap-2">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Save
