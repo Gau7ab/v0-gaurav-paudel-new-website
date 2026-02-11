@@ -13,9 +13,10 @@ import { AboutEditor } from '@/components/admin/about-editor'
 import { TreksEditor } from '@/components/admin/treks-editor'
 
 export function AdminDashboard() {
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' })
-    window.location.href = '/admin/login'
+  const handleLogout = () => {
+    localStorage.removeItem("admin_logged_in")
+    localStorage.removeItem("admin_user")
+    window.location.href = "/admin/login"
   }
 
   return (

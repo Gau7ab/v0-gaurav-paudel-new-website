@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -13,6 +13,12 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("admin_logged_in") === "true") {
+      window.location.href = "/admin/dashboard"
+    }
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,6 +35,8 @@ export default function AdminLoginPage() {
       const data = await res.json()
 
       if (data.success) {
+        localStorage.setItem("admin_logged_in", "true")
+        localStorage.setItem("admin_user", username)
         window.location.href = "/admin/dashboard"
       } else {
         setError(data.error || "Invalid credentials")
@@ -86,11 +94,7 @@ export default function AdminLoginPage() {
                 />
               </div>
             </div>
-            <Button
-              type="submit"
-              className="w-full font-semibold h-11"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full font-semibold h-11" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
