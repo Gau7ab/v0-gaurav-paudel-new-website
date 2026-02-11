@@ -11,10 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Username and password required" }, { status: 400 })
     }
 
-    const users = await sql(
-      "SELECT id, username FROM admin_users WHERE username = $1 AND password = $2",
-      [username, password]
-    )
+    const users = await sql`SELECT id, username FROM admin_users WHERE username = ${username} AND password = ${password}`
 
     if (users.length === 0) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })

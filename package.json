@@ -41,6 +41,7 @@
     "swr": "2.4.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "1.0.7",
+    "ws": "latest",
     "zod": "latest"
   },
   "devDependencies": {
