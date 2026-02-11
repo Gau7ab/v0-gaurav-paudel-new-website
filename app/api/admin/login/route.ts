@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ success: true })
     response.cookies.set("admin_session", "authenticated", {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      httpOnly: true,
+      httpOnly: false,
       sameSite: "lax",
       path: "/",
     })
