@@ -1,0 +1,96 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Plus, Trash2, Loader2 } from "lucide-react"
+
+interface Education { id: number; degree: string; institution: string; location: string; start_date: string; end_date: string; description: string }
+
+export function EducationEditor() {
+  const [items, setItems] = useState<Education[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [adding, setAdding] = useState(false)
+  const [form, setForm] = useState({ degree: "", institution: "", location: "", start_date: "", end_date: "", description: "" })
+
+  useEffect(() => {
+    fetch("/api/admin/content?table=education")
+      .then(r => r.json())
+      .then(res => { setItems(res.data || []); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  async function addItem() {
+    if (!form.degree || !form.institution) return
+    setAdding(true)
+    const res = await fetch("/api/admin/content", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table: "education", ...form, sort_order: items.length }),
+    })
+    if (res.ok) {
+      const result = await res.json()
+      setItems([...items, result.data])
+      setForm({ degree: "", institution: "", location: "", start_date: "", end_date: "", description: "" })
+      setShowForm(false)
+    }
+    setAdding(false)
+  }
+
+  async function deleteItem(id: number) {
+    if (!confirm("Delete this entry?")) return
+    const res = await fetch(`/api/admin/content?table=education&id=${id}`, { method: "DELETE" })
+    if (res.ok) setItems(items.filter(i => i.id !== id))
+  }
+
+  if (loading) return <div className="flex justify-center p-8"><Loader2 className="h-6 w-6 animate-spin" /></div>
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">Education</h2>
+        <Button onClick={() => setShowForm(!showForm)} className="gap-2"><Plus className="h-4 w-4" /> Add</Button>
+      </div>
+
+      {showForm && (
+        <Card className="border-primary/20 border-2">
+          <CardContent className="pt-6 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1"><Label>Degree</Label><Input value={form.degree} onChange={e => setForm({ ...form, degree: e.target.value })} placeholder="MBA, BBA..." /></div>
+              <div className="space-y-1"><Label>Institution</Label><Input value={form.institution} onChange={e => setForm({ ...form, institution: e.target.value })} /></div>
+              <div className="space-y-1"><Label>Location</Label><Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} /></div>
+              <div className="space-y-1"><Label>Start Date</Label><Input value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} placeholder="2022" /></div>
+              <div className="space-y-1"><Label>End Date</Label><Input value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} placeholder="2024" /></div>
+            </div>
+            <div className="space-y-1"><Label>Description</Label><Input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Optional details" /></div>
+            <div className="flex gap-2">
+              <Button onClick={addItem} disabled={adding}>{adding ? "Saving..." : "Save"}</Button>
+              <Button variant="outline" onClick={() => setShowForm(false)} className="bg-transparent">Cancel</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {items.map(item => (
+        <Card key={item.id}>
+          <CardContent className="pt-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-bold text-lg">{item.degree}</p>
+                <p className="text-primary font-semibold">{item.institution}</p>
+                <p className="text-sm text-muted-foreground">{item.start_date} - {item.end_date} {item.location && `| ${item.location}`}</p>
+                {item.description && <p className="text-sm mt-1 text-muted-foreground">{item.description}</p>}
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => deleteItem(item.id)} className="text-destructive"><Trash2 className="h-4 w-4" /></Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+
+      {items.length === 0 && !showForm && <p className="text-center text-muted-foreground py-8">No education added yet.</p>}
+    </div>
+  )
+}

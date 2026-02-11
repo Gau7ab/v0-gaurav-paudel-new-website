@@ -1,62 +1,62 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Mountain, Lock, Mail, AlertCircle } from "lucide-react"
+import { Mountain, Lock, User, AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("admin_logged_in") === "true") {
+      window.location.href = "/admin/dashboard"
+    }
+  }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
-    console.log("[v0] Attempting login for:", email)
     try {
-      const response = await fetch("/api/admin/login", {
+      const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        credentials: "include",
+        body: JSON.stringify({ username, password }),
       })
 
-      const data = await response.json()
+      const data = await res.json()
 
-      if (response.ok) {
-        console.log("[v0] Login successful, redirecting to dashboard")
-        router.push("/admin/dashboard")
+      if (data.success) {
+        localStorage.setItem("admin_logged_in", "true")
+        localStorage.setItem("admin_user", username)
+        window.location.href = "/admin/dashboard"
       } else {
-        console.log("[v0] Login failed:", data.error)
-        setError(data.error || "Authentication failed. Please check your credentials.")
+        setError(data.error || "Invalid credentials")
       }
-    } catch (err) {
-      console.log("[v0] Fetch error during login:", err)
-      setError("An error occurred during login. Please try again.")
+    } catch {
+      setError("Connection error. Please try again.")
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4 contour-pattern">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md border-primary/20 bg-card/80 backdrop-blur-xl shadow-2xl">
         <CardHeader className="text-center space-y-1">
           <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Mountain className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-2xl font-bold tracking-tight">Admin Gateway</CardTitle>
-          <CardDescription>Himalayan Navigator Management Portal</CardDescription>
+          <CardTitle className="text-2xl font-bold tracking-tight">Admin Login</CardTitle>
+          <CardDescription>Portfolio Management Dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -68,14 +68,15 @@ export default function AdminLoginPage() {
             )}
             <div className="space-y-2">
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  type="email"
-                  placeholder="admin@example.com"
+                  type="text"
+                  placeholder="Username"
                   className="pl-10 bg-background/50 border-primary/20 focus:border-primary"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
+                  autoComplete="username"
                 />
               </div>
             </div>
@@ -84,20 +85,17 @@ export default function AdminLoginPage() {
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="Password"
                   className="pl-10 bg-background/50 border-primary/20 focus:border-primary"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete="current-password"
                 />
               </div>
             </div>
-            <Button
-              type="submit"
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-11"
-              disabled={isLoading}
-            >
-              {isLoading ? "Authenticating..." : "Enter Command Center"}
+            <Button type="submit" className="w-full font-semibold h-11" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
           <p className="mt-6 text-center text-xs text-muted-foreground uppercase tracking-widest">Secure Access Only</p>
