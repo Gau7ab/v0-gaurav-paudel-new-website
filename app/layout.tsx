@@ -1,180 +1,86 @@
 import type React from "react"
-import type { Metadata } from "next"
-import { Poppins, Inter } from "next/font/google"
+import type { Metadata, Viewport } from "next"
+import { Inter, Manrope } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Navigation } from "@/components/navigation"
-import { SocialLinks } from "@/components/social-links"
-import { ProgressIndicator } from "@/components/progress-indicator"
-import { AccessibilitySkipLinks } from "@/components/accessibility-skip-links"
-import { DashainAnimation } from "@/components/dashain-animation"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-poppins",
-})
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-})
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" })
 
 export const metadata: Metadata = {
-  title: "Om Prakash Paudel Gaurav - Trekker & MBA Scholar | Portfolio",
+  title: "Gaurab Labs | Strategic Intelligence Tools & Psychometric Assessments",
   description:
-    "Om Prakash Paudel Gaurav - MBA Scholar, Himalayan Trekker & Adventure Explorer. Explore trekking portfolio, personality assessments, and professional experience.",
+    "Strategic intelligence platform providing consulting-grade business frameworks and validated psychometric assessments. Analyze deeply, plan strategically, and decide confidently with SWOT, Porter's Five Forces, personality tests, and career intelligence tools.",
   keywords:
-    "Om Prakash Paudel, Om Prakash Paudel Gaurav, Om Gaurav, trekker Nepal, MBA scholar Nepal, Himalayan trekking, adventure explorer, mountain guide, trek portfolio, Om Prakash",
-  authors: [{ name: "Om Prakash Paudel Gaurav" }],
-  creator: "Om Prakash Paudel",
-  metadataBase: new URL("https://omgaurav.com.np"),
-  alternates: {
-    canonical: "https://omgaurav.com.np",
-  },
+    "strategic intelligence tools, business decision frameworks, SWOT analysis, Porter's Five Forces, psychometric assessments, career intelligence, business model canvas, PESTLE analysis, personality assessment, Nepal",
   openGraph: {
+    title: "Gaurab Labs | Strategic Intelligence for Smarter Decisions",
+    description: "Consulting-grade business frameworks and psychometric assessments for strategic decision-making.",
     type: "website",
     locale: "en_US",
-    url: "https://omgaurav.com.np",
-    title: "Om Prakash Paudel Gaurav - Trekker & MBA Scholar",
-    description:
-      "MBA Scholar, Himalayan Trekker & Adventure Explorer. View my trekking portfolio, personality assessment, and professional journey.",
-    siteName: "Om Prakash Paudel Portfolio",
-    images: [
-      {
-        url: "https://omgaurav.com.np/images/himalayan-hero.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Om Prakash Paudel Gaurav - Himalayan Adventure",
-        type: "image/jpeg",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Om Prakash Paudel Gaurav - Trekker & MBA Scholar",
-    description: "Explore my Himalayan adventures, MBA insights, and professional portfolio.",
-    creator: "@gaurab__as_a",
-    images: ["https://omgaurav.com.np/images/himalayan-hero.jpg"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    nocache: false,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  verification: {
-    google: "YOUR_GOOGLE_SEARCH_CONSOLE_CODE",
-    yandex: "YOUR_YANDEX_VERIFICATION_CODE",
+    title: "Gaurab Labs | Strategic Intelligence Tools",
+    description: "Business frameworks and career intelligence assessments.",
   },
     generator: 'v0.app'
 }
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#0F766E",
+}
+
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode
-}) {
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${inter.variable}`}>
+    <html lang="en" className={`${inter.variable} ${manrope.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Person",
-              "@id": "https://omgaurav.com.np/#person",
-              name: "Om Prakash Paudel",
-              givenName: "Om Prakash",
-              familyName: "Paudel",
-              alternateName: ["Om Prakash Paudel Gaurav", "Om Gaurav", "Gaurav"],
-              url: "https://omgaurav.com.np",
-              sameAs: [
-                "https://instagram.com/gaurab__as_a",
-                "https://facebook.com/omgaurav",
-                "https://linkedin.com/in/om-prakash-paudel",
-              ],
-              description:
-                "MBA Scholar and Himalayan Trekker from Nepal specializing in mountain adventures and professional development.",
-              image: "https://omgaurav.com.np/images/himalayan-hero.jpg",
-              jobTitle: ["Trekker", "Adventure Explorer", "MBA Scholar"],
-              nationality: "Nepali",
-              birthPlace: {
-                "@type": "Place",
-                name: "Nepal",
+              "@type": "Organization",
+              name: "Gaurab Labs",
+              url: "https://omprakashpaudelgaurav.com.np",
+              logo: "https://omprakashpaudelgaurav.com.np/images/logo-teal.png",
+              description: "Strategic intelligence platform for business frameworks and psychometric assessments",
+              founder: {
+                "@type": "Person",
+                name: "Om Prakash Paudel Gaurav",
               },
-              areaServed: [
-                {
-                  "@type": "Place",
-                  name: "Nepal",
-                },
-                {
-                  "@type": "Place",
-                  name: "Himalayas",
-                },
-              ],
-              knowsAbout: [
-                "Himalayan Trekking",
-                "Mountain Navigation",
-                "Adventure Leadership",
-                "MBA",
-                "Business Strategy",
-              ],
-              hasOccupation: [
-                {
-                  "@type": "Occupation",
-                  name: "Trekker",
-                },
-                {
-                  "@type": "Occupation",
-                  name: "Adventure Explorer",
-                },
-                {
-                  "@type": "Occupation",
-                  name: "MBA Scholar",
-                },
-              ],
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Bharatpur",
+                addressRegion: "Chitwan",
+                addressCountry: "NP",
+              },
+              sameAs: ["https://www.linkedin.com/in/gau7ab/"],
             }),
           }}
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              url: "https://omgaurav.com.np",
-              name: "Om Prakash Paudel Portfolio",
-              description: "Personal portfolio and adventure blog of Om Prakash Paudel Gaurav",
-              potentialAction: {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate: "https://omgaurav.com.np/search?q={search_term_string}",
-                },
-                query_input: "required name=search_term_string",
-              },
-            }),
-          }}
-        />
-        <link rel="canonical" href="https://omgaurav.com.np" />
       </head>
-      <body className="font-sans">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <AccessibilitySkipLinks />
-          <ProgressIndicator />
-          <DashainAnimation />
-          <Navigation />
-          <main className="min-h-screen">{children}</main>
-          <SocialLinks />
-        </ThemeProvider>
+      <body className="font-sans antialiased bg-background text-foreground min-h-screen flex flex-col gradient-mesh relative overflow-x-hidden">
+        {typeof window !== "undefined" && window.innerWidth >= 1024 && (
+          <>
+            <div className="floating-orb floating-orb-1" aria-hidden="true" />
+            <div className="floating-orb floating-orb-2" aria-hidden="true" />
+            <div className="floating-orb floating-orb-3" aria-hidden="true" />
+          </>
+        )}
+        <Header />
+        <main className="flex-1 relative z-10">{children}</main>
+        <Footer />
+        <Analytics />
       </body>
     </html>
   )
