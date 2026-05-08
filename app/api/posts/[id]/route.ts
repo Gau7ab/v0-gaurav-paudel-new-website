@@ -68,6 +68,9 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
     const isNowPublished = is_published === true
     const published_at = !wasPublished && isNowPublished ? new Date() : undefined
 
+    // Convert tags array to PostgreSQL array format or null
+    const tagsValue = tags && tags.length > 0 ? tags : null
+
     const result = await sql`
       UPDATE posts SET
         type = ${type},
@@ -77,7 +80,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
         content = ${content},
         cover_image = ${cover_image || null},
         author = ${author},
-        tags = ${tags && tags.length > 0 ? tags : null},
+        tags = ${tagsValue},
         category = ${category || null},
         location = ${location || null},
         altitude = ${altitude || null},

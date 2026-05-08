@@ -88,6 +88,9 @@ export async function POST(request: NextRequest) {
     }
 
     const published_at = is_published ? new Date() : null
+    
+    // Convert tags array to PostgreSQL array format or null
+    const tagsValue = tags && tags.length > 0 ? tags : null
 
     const result = await sql`
       INSERT INTO posts (
@@ -97,7 +100,7 @@ export async function POST(request: NextRequest) {
         is_pinned, is_published, published_at
       ) VALUES (
         ${type}, ${title}, ${slug}, ${excerpt || null}, ${content}, ${cover_image || null},
-        ${author}, ${tags && tags.length > 0 ? tags : null},
+        ${author}, ${tagsValue},
         ${category || null}, ${location || null}, ${altitude || null}, ${duration || null}, ${difficulty || null},
         ${meta_title || null}, ${meta_description || null}, ${meta_keywords || null}, ${og_image || null},
         ${is_pinned || false}, ${is_published || false}, ${published_at}
