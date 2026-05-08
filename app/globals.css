@@ -83,8 +83,7 @@
 
 @layer base {
   * {
-    /* Simplified base styles to avoid potential parsing errors with custom property calculations */
-    @apply border-border;
+    @apply border-slate-200 dark:border-slate-800;
   }
   body {
     @apply bg-background text-foreground;
@@ -92,7 +91,13 @@
 }
 
 * {
-  border-color: var(--color-border);
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "rlig" 1, "calt" 1;
 }
 
 body {
@@ -340,9 +345,9 @@ body {
 .loading-shimmer {
   background: linear-gradient(
     90deg,
-    var(--color-muted) 25%,
-    color-mix(in srgb, var(--color-muted-foreground) 10%, transparent) 50%,
-    var(--color-muted) 75%
+    var(--muted) 25%,
+    color-mix(in srgb, var(--muted-foreground) 10%, transparent) 50%,
+    var(--muted) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 2s infinite;

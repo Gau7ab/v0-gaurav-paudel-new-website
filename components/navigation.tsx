@@ -139,10 +139,10 @@ export function Navigation() {
       >
         <div
           className={`
-          flex items-center gap-2 px-6 py-3 rounded-full
+          flex items-center gap-4 px-8 py-3 rounded-full
           bg-background/40 backdrop-blur-xl border border-primary/20
           shadow-lg transition-all duration-300
-          ${isScrolled ? "lg:gap-1" : "gap-3"}
+          ${isScrolled ? "lg:gap-2" : "gap-4"}
           hidden md:flex
         `}
         >
