@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter, useSearchParams, usePathname } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import dynamic from "next/dynamic"
 
 // Dynamic import TipTap editor to avoid hydration issues
@@ -51,16 +51,19 @@ const initialFormData: PostFormData = {
   is_published: false,
 }
 
-export default function PostEditorPage() {
+interface PostEditorPageProps {
+  postType?: "blog" | "travel"
+}
+
+export default function PostEditorPage({ postType = "blog" }: PostEditorPageProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   // Extract ID from pathname: /admin/posts/[id]/edit -> [id]
   const pathParts = pathname.split("/")
   const postId = pathParts[pathParts.length - 2] // Get the part before "edit"
   const isEdit = postId && postId !== "new" && postId !== "posts"
 
-  const [form, setForm] = useState<PostFormData>({ ...initialFormData, type: (searchParams.get("type") as "blog" | "travel") || "blog" })
+  const [form, setForm] = useState<PostFormData>({ ...initialFormData, type: postType })
   const [loading, setLoading] = useState(isEdit)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
