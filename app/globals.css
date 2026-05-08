@@ -612,3 +612,48 @@ body {
 .parallax-image:hover {
   transform: scale(1.05);
 }
+
+/* TipTap Rich Text Editor */
+.tiptap {
+  @apply min-h-[300px] rounded-md border border-input bg-card p-4;
+  
+  p {
+    @apply my-2;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply my-2 font-bold;
+  }
+  
+  h1 { @apply text-2xl; }
+  h2 { @apply text-xl; }
+  h3 { @apply text-lg; }
+  
+  ul, ol {
+    @apply my-2 ml-4;
+  }
+  
+  pre {
+    @apply my-2 overflow-auto rounded bg-muted p-3;
+  }
+  
+  code {
+    @apply rounded bg-muted px-1 py-0.5 font-mono text-sm;
+  }
+  
+  blockquote {
+    @apply my-2 border-l-4 border-primary pl-4 italic;
+  }
+  
+  a {
+    @apply text-primary underline;
+  }
+  
+  img {
+    @apply max-w-full rounded;
+  }
+}
+
+.tiptap-toolbar {
+  @apply mb-2 flex flex-wrap gap-1 rounded-md border border-border bg-muted p-2;
+}
