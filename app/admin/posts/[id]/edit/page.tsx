@@ -55,8 +55,10 @@ export default function PostEditorPage() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const postId = pathname.includes("/edit") ? pathname.split("/").pop() : null
-  const isEdit = !!postId
+  // Extract ID from pathname: /admin/posts/[id]/edit -> [id]
+  const pathParts = pathname.split("/")
+  const postId = pathParts[pathParts.length - 2] // Get the part before "edit"
+  const isEdit = postId && postId !== "new" && postId !== "posts"
 
   const [form, setForm] = useState<PostFormData>({ ...initialFormData, type: (searchParams.get("type") as "blog" | "travel") || "blog" })
   const [loading, setLoading] = useState(isEdit)
@@ -82,8 +84,16 @@ export default function PostEditorPage() {
       const res = await fetch(`/api/posts/${postId}?admin=true`, {
         headers: { "x-admin-auth": "true" },
       })
+      if (!res.ok) {
+        throw new Error(`Failed to fetch post: ${res.status}`)
+      }
       const post = await res.json()
-      setForm(post)
+      // Ensure post has all required fields with defaults
+      setForm({
+        ...initialFormData,
+        ...post,
+        tags: Array.isArray(post.tags) ? post.tags : [],
+      })
       setLoading(false)
     } catch (err) {
       console.error("Failed to load post:", err)
