@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Calendar, MapPin, Mountain, Clock, Difficulty } from 'lucide-react'
+import { ArrowLeft, Calendar, MapPin, Mountain, Clock, AlertCircle, Zap } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
 export default function TravelPostPage({ params }: { params: { slug: string } }) {
@@ -97,7 +97,7 @@ export default function TravelPostPage({ params }: { params: { slug: string } })
               )}
               {post.difficulty && (
                 <div className="flex items-center gap-2">
-                  <Difficulty className="h-5 w-5 text-primary" />
+                  <Zap className="h-5 w-5 text-primary" />
                   <div className="text-sm">
                     <p className="text-xs text-muted-foreground">Difficulty</p>
                     <p className="font-medium text-foreground capitalize">{post.difficulty}</p>
