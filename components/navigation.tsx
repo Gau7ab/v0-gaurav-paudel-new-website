@@ -76,6 +76,8 @@ export function Navigation() {
     { href: "/", label: "Home", id: "home" },
     { href: "/#resume", label: "Resume", id: "resume" },
     { href: "/#portfolio", label: "Portfolio", id: "portfolio" },
+    { href: "/blog", label: "Blog", id: "blog" },
+    { href: "/travel", label: "Travel", id: "travel" },
     { href: "/personality-test", label: "Personality Test", id: "personality-test" },
     { href: "/tools", label: "Tools", id: "tools" },
     { href: "/games", label: "Games", id: "games" },
