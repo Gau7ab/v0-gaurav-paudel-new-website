@@ -77,7 +77,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
         content = ${content},
         cover_image = ${cover_image || null},
         author = ${author},
-        tags = ${tags ? JSON.stringify(tags) : null},
+        tags = ${tags && tags.length > 0 ? tags : null},
         category = ${category || null},
         location = ${location || null},
         altitude = ${altitude || null},

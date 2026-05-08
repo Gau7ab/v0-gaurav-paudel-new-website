@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         is_pinned, is_published, published_at
       ) VALUES (
         ${type}, ${title}, ${slug}, ${excerpt || null}, ${content}, ${cover_image || null},
-        ${author}, ${tags ? JSON.stringify(tags) : null},
+        ${author}, ${tags && tags.length > 0 ? tags : null},
         ${category || null}, ${location || null}, ${altitude || null}, ${duration || null}, ${difficulty || null},
         ${meta_title || null}, ${meta_description || null}, ${meta_keywords || null}, ${og_image || null},
         ${is_pinned || false}, ${is_published || false}, ${published_at}
