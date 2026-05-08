@@ -399,30 +399,43 @@ export default function PostEditorPage() {
               {/* URL Image Input */}
               <div>
                 <label className="block text-sm font-medium mb-2">Image URL</label>
+                <p className="text-xs text-foreground/50 mb-2">
+                  Paste a direct image URL (e.g. https://i.ibb.co/xxx/image.jpg) or the full imgbb embed code — the URL will be extracted automatically.
+                </p>
                 <input
                   type="text"
                   value={form.cover_image}
-                  onChange={(e) => setForm((prev) => ({ ...prev, cover_image: e.target.value }))}
+                  onChange={(e) => {
+                    let val = e.target.value.trim()
+                    // Extract direct image URL from imgbb HTML embed code
+                    const srcMatch = val.match(/src=["']?(https:\/\/i\.ibb\.co\/[^"'\s>]+)["']?/)
+                    if (srcMatch) val = srcMatch[1]
+                    // Also handle BBCode format: [img]https://i.ibb.co/...[/img]
+                    const bbMatch = val.match(/\[img\](https:\/\/i\.ibb\.co\/[^\[]+)\[\/img\]/)
+                    if (bbMatch) val = bbMatch[1]
+                    setForm((prev) => ({ ...prev, cover_image: val }))
+                  }}
                   className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:border-primary"
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="https://i.ibb.co/xxx/image.jpg  or paste imgbb embed code"
                 />
               </div>
 
               {/* Preview */}
-              {form.cover_image && (
+              {form.cover_image && form.cover_image.startsWith('http') && (
                 <div className="rounded-lg overflow-hidden bg-white/5">
                   <div className="relative w-full h-48">
-                    <img 
-                      src={form.cover_image.includes('imgbb.com') ? `/api/image-proxy?url=${encodeURIComponent(form.cover_image)}` : form.cover_image}
-                      alt="Cover preview" 
+                    <img
+                      src={`/api/image-proxy?url=${encodeURIComponent(form.cover_image)}`}
+                      alt="Cover preview"
                       className="w-full h-full object-cover rounded-lg"
-                      crossOrigin="anonymous"
                       onError={(e) => {
-                        console.log("[v0] Image failed to load:", form.cover_image)
+                        // Prevent infinite retry loop
+                        e.currentTarget.onerror = null
                         e.currentTarget.src = '/placeholder.jpg'
                       }}
                     />
                   </div>
+                  <p className="text-xs text-foreground/50 px-3 py-2 truncate">{form.cover_image}</p>
                 </div>
               )}
             </div>

@@ -50,15 +50,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       </div>
 
       {/* Hero Image */}
-      {post.cover_image && (
+      {post.cover_image && post.cover_image.startsWith('http') && (
         <div className="relative h-96 md:h-[500px] w-full overflow-hidden">
           <img
-            src={post.cover_image.includes('imgbb.com') ? `/api/image-proxy?url=${encodeURIComponent(post.cover_image)}` : post.cover_image}
+            src={`/api/image-proxy?url=${encodeURIComponent(post.cover_image)}`}
             alt={post.title}
             className="w-full h-full object-cover"
-            crossOrigin="anonymous"
             onError={(e) => {
-              console.log("[v0] Image failed to load:", post.cover_image)
+              e.currentTarget.onerror = null
               e.currentTarget.src = '/placeholder.jpg'
             }}
           />
