@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Trash2, Loader2, Mountain, ImageIcon } from "lucide-react"
+import { extractImageUrl } from "@/lib/utils"
 
 interface Trek { id: number; name: string; location: string; altitude: string; duration: string; difficulty: string; description: string; image_url: string; date_completed: string }
 
@@ -20,7 +21,11 @@ export function TreksEditor() {
   useEffect(() => {
     fetch("/api/admin/content?table=treks")
       .then(r => r.json())
-      .then(res => { setItems(res.data || []); setLoading(false) })
+      .then(res => {
+        const cleaned = (res.data || []).map((t: Trek) => ({ ...t, image_url: extractImageUrl(t.image_url || '') }))
+        setItems(cleaned)
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
   }, [])
 

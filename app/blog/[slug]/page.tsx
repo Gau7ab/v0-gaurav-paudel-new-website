@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Calendar, User, Eye, Share2 } from 'lucide-react'
 import { notFound } from 'next/navigation'
+import { sanitizeHtml } from '@/lib/utils'
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const [post, setPost] = useState<any>(null)
@@ -104,7 +105,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           {post.content && (
             <div className="prose prose-invert max-w-none mb-12">
               <div
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
                 className="text-foreground/90 leading-relaxed space-y-4"
               />
             </div>
