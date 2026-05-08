@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 /* Moved theme definitions outside @layer base for Tailwind v4 */
 :root {
