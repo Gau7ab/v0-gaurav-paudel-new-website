@@ -14,8 +14,8 @@ export async function GET(request: NextRequest) {
     const url = new URL(imageUrl)
     
     // Allow common image hosts
-    const allowedHosts = ['imgbb.com', 'i.imgbb.com', 'imgur.com', 'i.imgur.com']
-    const isAllowed = allowedHosts.some(host => url.hostname.includes(host))
+    const allowedHosts = ['imgbb.com', 'i.imgbb.com', 'ibb.co', 'i.ibb.co', 'imgur.com', 'i.imgur.com']
+    const isAllowed = allowedHosts.some(host => url.hostname === host || url.hostname.endsWith('.' + host))
 
     if (!isAllowed) {
       return NextResponse.json({ error: 'Image host not allowed' }, { status: 403 })

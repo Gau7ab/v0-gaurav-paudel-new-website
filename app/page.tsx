@@ -49,7 +49,7 @@ function TrekModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] bg-card border-secondary/30 text-foreground p-0 overflow-y-auto">
         <div className="relative h-48 md:h-80 w-full flex-shrink-0">
-          <Image src={trek.image || "/placeholder.svg"} alt={trek.name} fill className="object-cover" />
+          <Image src={trek.image_url || trek.image || "/placeholder.svg"} alt={trek.name} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
           <button
             onClick={onClose}
@@ -61,7 +61,7 @@ function TrekModal({
           <div className="absolute bottom-3 left-4 right-4 md:bottom-4 md:left-6 md:right-6">
             <Badge className="bg-primary text-primary-foreground font-bold px-2 py-1 md:px-3 text-xs md:text-sm mb-2 inline-flex items-center gap-1">
               <Mountain className="h-3 w-3" />
-              {trek.elevation}
+              {trek.altitude || trek.elevation}
             </Badge>
             <h2 className="text-xl md:text-3xl font-bold text-foreground drop-shadow-lg">{trek.name}</h2>
           </div>
@@ -76,7 +76,7 @@ function TrekModal({
             </div>
             <div className="flex items-center gap-2 text-muted-foreground text-sm">
               <Mountain className="h-4 w-4 text-primary" />
-              <span>{trek.elevation} elevation</span>
+              <span>{trek.altitude || trek.elevation} elevation</span>
             </div>
           </div>
         </div>

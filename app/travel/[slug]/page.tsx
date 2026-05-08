@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Calendar, MapPin, Mountain, Clock, AlertCircle, Zap } from 'lucide-react'
 import { notFound } from 'next/navigation'
+import { sanitizeHtml } from '@/lib/utils'
 
 export default function TravelPostPage({ params }: { params: { slug: string } }) {
   const [post, setPost] = useState<any>(null)
@@ -48,15 +49,14 @@ export default function TravelPostPage({ params }: { params: { slug: string } })
       </div>
 
       {/* Hero Image */}
-      {post.cover_image && (
+      {post.cover_image && post.cover_image.startsWith('http') && (
         <div className="relative h-96 md:h-[500px] w-full overflow-hidden">
           <img
-            src={post.cover_image.includes('imgbb.com') ? `/api/image-proxy?url=${encodeURIComponent(post.cover_image)}` : post.cover_image}
+            src={`/api/image-proxy?url=${encodeURIComponent(post.cover_image)}`}
             alt={post.title}
             className="w-full h-full object-cover"
-            crossOrigin="anonymous"
             onError={(e) => {
-              console.log("[v0] Image failed to load:", post.cover_image)
+              e.currentTarget.onerror = null
               e.currentTarget.src = '/placeholder.jpg'
             }}
           />
@@ -132,7 +132,7 @@ export default function TravelPostPage({ params }: { params: { slug: string } })
           {post.content && (
             <div className="prose prose-invert max-w-none mb-12">
               <div
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
                 className="text-foreground/90 leading-relaxed space-y-4"
               />
             </div>
