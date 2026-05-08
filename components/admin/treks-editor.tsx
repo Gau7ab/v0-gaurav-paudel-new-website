@@ -77,10 +77,31 @@ export function TreksEditor() {
             </div>
             <div className="space-y-1">
               <Label>Image URL</Label>
-              <Input value={form.image_url} onChange={e => setForm({ ...form, image_url: e.target.value })} placeholder="https://..." />
-              {form.image_url && (
+              <p className="text-xs text-muted-foreground">Paste a direct image URL or imgbb embed code — the URL will be extracted automatically.</p>
+              <Input
+                value={form.image_url}
+                onChange={e => {
+                  let val = e.target.value.trim()
+                  // Extract direct URL from imgbb HTML embed code
+                  const srcMatch = val.match(/src=["']?(https:\/\/i\.ibb\.co\/[^"'\s>]+)["']?/)
+                  if (srcMatch) val = srcMatch[1]
+                  // Handle BBCode format
+                  const bbMatch = val.match(/\[img\](https?:\/\/[^\[]+)\[\/img\]/i)
+                  if (bbMatch) val = bbMatch[1]
+                  // Strip any remaining HTML tags — keep only plain URL
+                  val = val.replace(/<[^>]*>/g, "").trim()
+                  setForm({ ...form, image_url: val })
+                }}
+                placeholder="https://i.ibb.co/xxx/image.jpg or paste imgbb embed code"
+              />
+              {form.image_url && form.image_url.startsWith("http") && (
                 <div className="mt-2 relative w-full max-w-xs h-40 rounded-lg overflow-hidden border border-border">
-                  <img src={form.image_url || "/placeholder.svg"} alt="Preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = "none" }} />
+                  <img
+                    src={`/api/image-proxy?url=${encodeURIComponent(form.image_url)}`}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                    onError={e => { e.currentTarget.onerror = null; e.currentTarget.src = "/placeholder.jpg" }}
+                  />
                 </div>
               )}
             </div>
@@ -97,9 +118,14 @@ export function TreksEditor() {
         <Card key={item.id}>
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
-              {item.image_url ? (
+              {item.image_url && item.image_url.startsWith("http") ? (
                 <div className="w-28 h-20 rounded-lg overflow-hidden border border-border shrink-0">
-                  <img src={item.image_url || "/placeholder.svg"} alt={item.name} className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).parentElement!.style.display = "none" }} />
+                  <img
+                    src={`/api/image-proxy?url=${encodeURIComponent(item.image_url)}`}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                    onError={e => { e.currentTarget.onerror = null; (e.currentTarget.parentElement as HTMLElement).style.display = "none" }}
+                  />
                 </div>
               ) : (
                 <div className="w-28 h-20 rounded-lg border border-dashed border-muted-foreground/30 flex items-center justify-center shrink-0">
