@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { LogOut } from 'lucide-react'
+import Link from 'next/link'
 import { SkillsEditor } from '@/components/admin/skills-editor'
 import { ExperienceEditor } from '@/components/admin/experience-editor'
 import { ProjectsEditor } from '@/components/admin/projects-editor'
@@ -28,10 +29,17 @@ export function AdminDashboard() {
             <h1 className="text-2xl font-bold text-foreground">Portfolio Admin</h1>
             <p className="text-sm text-muted-foreground">Manage your portfolio content</p>
           </div>
-          <Button variant="outline" onClick={handleLogout} className="gap-2 bg-transparent">
-            <LogOut className="w-4 h-4" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-3">
+            <Link href="/admin/posts">
+              <Button variant="outline" className="gap-2 bg-transparent">
+                📝 Blog & Travel
+              </Button>
+            </Link>
+            <Button variant="outline" onClick={handleLogout} className="gap-2 bg-transparent">
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </div>
 
