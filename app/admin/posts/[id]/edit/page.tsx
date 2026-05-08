@@ -413,7 +413,7 @@ export default function PostEditorPage() {
                 <div className="rounded-lg overflow-hidden bg-white/5">
                   <div className="relative w-full h-48">
                     <img 
-                      src={form.cover_image} 
+                      src={form.cover_image.includes('imgbb.com') ? `/api/image-proxy?url=${encodeURIComponent(form.cover_image)}` : form.cover_image}
                       alt="Cover preview" 
                       className="w-full h-full object-cover rounded-lg"
                       crossOrigin="anonymous"
