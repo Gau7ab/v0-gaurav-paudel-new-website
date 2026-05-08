@@ -76,6 +76,8 @@ export function Navigation() {
     { href: "/", label: "Home", id: "home" },
     { href: "/#resume", label: "Resume", id: "resume" },
     { href: "/#portfolio", label: "Portfolio", id: "portfolio" },
+    { href: "/blog", label: "Blog", id: "blog" },
+    { href: "/travel", label: "Travel", id: "travel" },
     { href: "/personality-test", label: "Personality Test", id: "personality-test" },
     { href: "/tools", label: "Tools", id: "tools" },
     { href: "/games", label: "Games", id: "games" },
@@ -137,10 +139,10 @@ export function Navigation() {
       >
         <div
           className={`
-          flex items-center gap-2 px-6 py-3 rounded-full
+          flex items-center gap-4 px-8 py-3 rounded-full
           bg-background/40 backdrop-blur-xl border border-primary/20
           shadow-lg transition-all duration-300
-          ${isScrolled ? "lg:gap-1" : "gap-3"}
+          ${isScrolled ? "lg:gap-2" : "gap-4"}
           hidden md:flex
         `}
         >
