@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Poppins, Inter } from "next/font/google"
+import Script from "next/script"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navigation } from "@/components/navigation"
@@ -84,7 +85,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${inter.variable}`}>
       <head>
-        <script
+        <link rel="canonical" href="https://omgaurav.com.np" />
+        <Script
+          id="person-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -144,7 +147,8 @@ export default function RootLayout({
             }),
           }}
         />
-        <script
+        <Script
+          id="website-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -164,7 +168,6 @@ export default function RootLayout({
             }),
           }}
         />
-        <link rel="canonical" href="https://omgaurav.com.np" />
       </head>
       <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
