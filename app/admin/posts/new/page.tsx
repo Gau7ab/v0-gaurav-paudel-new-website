@@ -1,1 +1,5 @@
-export { default } from "@/app/admin/posts/[id]/edit/page.tsx"
+import PostEditorPage from "@/app/admin/posts/[id]/edit/page"
+
+export default function NewPostPage() {
+  return <PostEditorPage />
+}
