@@ -10,7 +10,7 @@ Your Neon database now has a fully functional **Blog & Travel Post Management Sy
 
 A new `posts` table was created in Neon with the following structure:
 
-```sql
+\`\`\`sql
 CREATE TABLE posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   type TEXT NOT NULL CHECK (type IN ('blog', 'travel')),
@@ -37,7 +37,7 @@ CREATE TABLE posts (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
-```
+\`\`\`
 
 Indexes created for fast queries on slug, type/published status, and pinned posts.
 
@@ -137,9 +137,9 @@ Deletes a post. Requires auth.
 ## Auth & Security
 
 All POST/PUT/PATCH/DELETE operations check for the header:
-```javascript
+\`\`\`javascript
 x-admin-auth: true
-```
+\`\`\`
 
 This matches your existing localStorage-based auth pattern. The JavaScript adds this header automatically in fetch requests.
 
@@ -195,7 +195,7 @@ This matches your existing localStorage-based auth pattern. The JavaScript adds 
 
 To display posts on your public site:
 
-```javascript
+\`\`\`javascript
 // Get all published blog posts
 const response = await fetch('/api/posts?type=blog')
 const blogPosts = await response.json()
@@ -207,7 +207,7 @@ const pinnedTreks = await response.json()
 // Get single published post by slug
 const response = await fetch(`/api/posts?slug=${slug}`)
 const post = await response.json()
-```
+\`\`\`
 
 You'll need to add public routes `/blog/[slug]` and `/travels/[slug]` to display individual posts.
 
