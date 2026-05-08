@@ -1,4 +1,5 @@
 import useSWR from "swr"
+import { extractImageUrl } from "@/lib/utils"
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -64,6 +65,14 @@ export function usePortfolioData() {
     dedupingInterval: 60000,
   })
 
+  // Sanitize trek image URLs to remove any HTML embed code from database
+  const sanitizedTreks = (treks: any[]) => {
+    return treks.map(trek => ({
+      ...trek,
+      image_url: extractImageUrl(trek.image_url || ''),
+    }))
+  }
+
   // Merge: use DB data when available, fall back to hardcoded
   return {
     about: data?.about || fallbackData.about,
@@ -72,7 +81,7 @@ export function usePortfolioData() {
     education: data?.education?.length ? data.education : fallbackData.education,
     projects: data?.projects?.length ? data.projects : fallbackData.projects,
     achievements: data?.achievements?.length ? data.achievements : fallbackData.achievements,
-    treks: data?.treks?.length ? data.treks : fallbackData.treks,
+    treks: data?.treks?.length ? sanitizedTreks(data.treks) : fallbackData.treks,
     isLoading,
     error,
   }
