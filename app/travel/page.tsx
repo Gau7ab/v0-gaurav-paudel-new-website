@@ -15,7 +15,7 @@ export default function TravelPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch('/api/posts?type=travel&published=true')
+        const res = await fetch('/api/posts?type=travel')
         const data = await res.json()
         setPosts(data)
       } catch (error) {

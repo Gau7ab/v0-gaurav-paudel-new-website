@@ -400,8 +400,19 @@ export default function PostEditorPage() {
 
               {/* Preview */}
               {form.cover_image && (
-                <div className="rounded-lg overflow-hidden">
-                  <img src={form.cover_image} alt="Cover preview" className="w-full h-48 object-cover rounded-lg" />
+                <div className="rounded-lg overflow-hidden bg-white/5">
+                  <div className="relative w-full h-48">
+                    <img 
+                      src={form.cover_image} 
+                      alt="Cover preview" 
+                      className="w-full h-full object-cover rounded-lg"
+                      crossOrigin="anonymous"
+                      onError={(e) => {
+                        console.log("[v0] Image failed to load:", form.cover_image)
+                        e.currentTarget.src = '/placeholder.jpg'
+                      }}
+                    />
+                  </div>
                 </div>
               )}
             </div>
