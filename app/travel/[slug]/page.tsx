@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -50,12 +49,15 @@ export default function TravelPostPage({ params }: { params: { slug: string } })
 
       {/* Hero Image */}
       {post.cover_image && (
-        <div className="relative h-96 md:h-[500px] w-full">
-          <Image
+        <div className="relative h-96 md:h-[500px] w-full overflow-hidden">
+          <img
             src={post.cover_image}
             alt={post.title}
-            fill
-            className="object-cover"
+            className="w-full h-full object-cover"
+            crossOrigin="anonymous"
+            onError={(e) => {
+              e.currentTarget.src = '/placeholder.jpg'
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
         </div>
