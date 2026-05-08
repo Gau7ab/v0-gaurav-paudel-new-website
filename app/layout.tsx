@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Poppins, Inter } from "next/font/google"
-import Script from "next/script"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navigation } from "@/components/navigation"
@@ -86,88 +85,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${inter.variable}`}>
       <head>
         <link rel="canonical" href="https://omgaurav.com.np" />
-        <Script
-          id="person-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Person",
-              "@id": "https://omgaurav.com.np/#person",
-              name: "Om Prakash Paudel",
-              givenName: "Om Prakash",
-              familyName: "Paudel",
-              alternateName: ["Om Prakash Paudel Gaurav", "Om Gaurav", "Gaurav"],
-              url: "https://omgaurav.com.np",
-              sameAs: [
-                "https://instagram.com/gaurab__as_a",
-                "https://facebook.com/omgaurav",
-                "https://linkedin.com/in/om-prakash-paudel",
-              ],
-              description:
-                "MBA Scholar and Himalayan Trekker from Nepal specializing in mountain adventures and professional development.",
-              image: "https://omgaurav.com.np/images/himalayan-hero.jpg",
-              jobTitle: ["Trekker", "Adventure Explorer", "MBA Scholar"],
-              nationality: "Nepali",
-              birthPlace: {
-                "@type": "Place",
-                name: "Nepal",
-              },
-              areaServed: [
-                {
-                  "@type": "Place",
-                  name: "Nepal",
-                },
-                {
-                  "@type": "Place",
-                  name: "Himalayas",
-                },
-              ],
-              knowsAbout: [
-                "Himalayan Trekking",
-                "Mountain Navigation",
-                "Adventure Leadership",
-                "MBA",
-                "Business Strategy",
-              ],
-              hasOccupation: [
-                {
-                  "@type": "Occupation",
-                  name: "Trekker",
-                },
-                {
-                  "@type": "Occupation",
-                  name: "Adventure Explorer",
-                },
-                {
-                  "@type": "Occupation",
-                  name: "MBA Scholar",
-                },
-              ],
-            }),
-          }}
-        />
-        <Script
-          id="website-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              url: "https://omgaurav.com.np",
-              name: "Om Prakash Paudel Portfolio",
-              description: "Personal portfolio and adventure blog of Om Prakash Paudel Gaurav",
-              potentialAction: {
-                "@type": "SearchAction",
-                target: {
-                  "@type": "EntryPoint",
-                  urlTemplate: "https://omgaurav.com.np/search?q={search_term_string}",
-                },
-                query_input: "required name=search_term_string",
-              },
-            }),
-          }}
-        />
       </head>
       <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
