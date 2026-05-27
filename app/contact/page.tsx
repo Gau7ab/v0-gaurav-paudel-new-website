@@ -4,15 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, MapPin, Phone, CheckCircle } from "lucide-react"
+import { Mail, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { AnimateOnScroll, AnimateStagger } from "@/components/scroll-animation"
 import { useState } from "react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function Contact() {
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [isSent, setIsSent] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
 
@@ -27,18 +27,23 @@ export default function Contact() {
     setErrorMessage("")
 
     try {
+      console.log("[v0] Submitting contact form:", formData)
       const response = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
 
+      console.log("[v0] API Response status:", response.status)
       const data = await response.json()
+      console.log("[v0] API Response data:", data)
 
       if (response.ok) {
-        setIsSent(true)
+        console.log("[v0] Message sent successfully, redirecting to thank you page")
+        router.push("/thank-you")
       } else {
         setErrorMessage(data.error || "Failed to send message. Please try again.")
+        console.error("[v0] API error:", data.error)
       }
     } catch (error) {
       console.error("[v0] Error sending message:", error)
@@ -46,33 +51,6 @@ export default function Contact() {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // Show thank you message only
-  if (isSent) {
-    return (
-      <div className="container mx-auto px-4 py-16 md:py-24 flex items-center justify-center min-h-[60vh]">
-        <AnimateOnScroll animation="slideUp">
-          <Card className="w-full max-w-md text-center">
-            <CardContent className="pt-8">
-              <div className="mb-4 flex justify-center">
-                <CheckCircle className="h-16 w-16 text-green-500" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">Thank You!</h2>
-              <p className="text-muted-foreground mb-4">
-                Your message has been received successfully. I appreciate you taking the time to reach out.
-              </p>
-              <p className="text-sm text-muted-foreground mb-6">
-                I'll get back to you as soon as possible at the email address you provided.
-              </p>
-              <Link href="/">
-                <Button className="w-full">Back to Home</Button>
-              </Link>
-            </CardContent>
-          </Card>
-        </AnimateOnScroll>
-      </div>
-    )
   }
 
   return (
