@@ -29,9 +29,10 @@ export async function POST(request: Request) {
       VALUES (${name}, ${email}, ${subject}, ${message}, NOW())
     `
 
-    // Send email to admin via Formspree
+    // Send email to admin via Formspree using project ID
     try {
-      await fetch("https://formspree.io/f/xwpojlky", {
+      const formspreeProjectId = "2742347210439000046"
+      await fetch(`https://formspree.io/f/${formspreeProjectId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
