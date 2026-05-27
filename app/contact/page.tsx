@@ -4,14 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, MapPin, Phone } from "lucide-react"
+import { Mail, MapPin, Phone, CheckCircle } from "lucide-react"
 import Image from "next/image"
 import { AnimateOnScroll, AnimateStagger } from "@/components/scroll-animation"
 import { useState } from "react"
+import Link from "next/link"
 
 export default function Contact() {
   const [isLoading, setIsLoading] = useState(false)
-  const [successMessage, setSuccessMessage] = useState("")
+  const [isSent, setIsSent] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
 
@@ -23,7 +24,6 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
-    setSuccessMessage("")
     setErrorMessage("")
 
     try {
@@ -36,8 +36,7 @@ export default function Contact() {
       const data = await response.json()
 
       if (response.ok) {
-        setSuccessMessage("Message sent successfully! I'll get back to you soon.")
-        setFormData({ name: "", email: "", subject: "", message: "" })
+        setIsSent(true)
       } else {
         setErrorMessage(data.error || "Failed to send message. Please try again.")
       }
@@ -47,6 +46,33 @@ export default function Contact() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Show thank you message only
+  if (isSent) {
+    return (
+      <div className="container mx-auto px-4 py-16 md:py-24 flex items-center justify-center min-h-[60vh]">
+        <AnimateOnScroll animation="slideUp">
+          <Card className="w-full max-w-md text-center">
+            <CardContent className="pt-8">
+              <div className="mb-4 flex justify-center">
+                <CheckCircle className="h-16 w-16 text-green-500" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold mb-2">Thank You!</h2>
+              <p className="text-muted-foreground mb-4">
+                Your message has been received successfully. I appreciate you taking the time to reach out.
+              </p>
+              <p className="text-sm text-muted-foreground mb-6">
+                I'll get back to you as soon as possible at the email address you provided.
+              </p>
+              <Link href="/">
+                <Button className="w-full">Back to Home</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </AnimateOnScroll>
+      </div>
+    )
   }
 
   return (
@@ -128,13 +154,6 @@ export default function Contact() {
                 <CardTitle>Get in Touch</CardTitle>
               </CardHeader>
               <CardContent>
-                {/* Success Message */}
-                {successMessage && (
-                  <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                    <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
-                  </div>
-                )}
-
                 {/* Error Message */}
                 {errorMessage && (
                   <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">

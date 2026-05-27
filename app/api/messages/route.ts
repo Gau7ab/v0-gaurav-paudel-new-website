@@ -25,9 +25,27 @@ export async function POST(request: Request) {
 
     // Insert into database
     await sql`
-      INSERT INTO messages (name, email, subject, message)
-      VALUES (${name}, ${email}, ${subject}, ${message})
+      INSERT INTO messages (name, email, subject, message, created_at)
+      VALUES (${name}, ${email}, ${subject}, ${message}, NOW())
     `
+
+    // Send email to admin via Formspree
+    try {
+      await fetch("https://formspree.io/f/xwpojlky", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          subject,
+          message,
+          _subject: `New message from ${name}: ${subject}`,
+        }),
+      })
+    } catch (emailError) {
+      console.error("[v0] Error sending email via Formspree:", emailError)
+      // Don't fail the response if email fails - message is still saved
+    }
 
     return NextResponse.json(
       { success: true, message: "Message sent successfully!" },
