@@ -7,8 +7,48 @@ import { Textarea } from "@/components/ui/textarea"
 import { Mail, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { AnimateOnScroll, AnimateStagger } from "@/components/scroll-animation"
+import { useState } from "react"
 
 export default function Contact() {
+  const [isLoading, setIsLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
+  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setSuccessMessage("")
+    setErrorMessage("")
+
+    try {
+      const response = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSuccessMessage("Message sent successfully! I'll get back to you soon.")
+        setFormData({ name: "", email: "", subject: "", message: "" })
+      } else {
+        setErrorMessage(data.error || "Failed to send message. Please try again.")
+      }
+    } catch (error) {
+      console.error("[v0] Error sending message:", error)
+      setErrorMessage("An error occurred. Please try again later.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <div className="grid gap-6 md:gap-8 md:grid-cols-2">
@@ -88,14 +128,37 @@ export default function Contact() {
                 <CardTitle>Get in Touch</CardTitle>
               </CardHeader>
               <CardContent>
-                <form action="https://formspree.io/f/xwpojlky" method="POST" className="space-y-4">
+                {/* Success Message */}
+                {successMessage && (
+                  <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
+                  </div>
+                )}
+
+                {/* Error Message */}
+                {errorMessage && (
+                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <p className="text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <AnimateOnScroll animation="slideUp" delay={0.5}>
                       <div className="space-y-2">
                         <label htmlFor="name" className="text-sm font-medium">
                           Name
                         </label>
-                        <Input id="name" name="name" required className="h-10" placeholder="Your name" />
+                        <Input
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          required
+                          disabled={isLoading}
+                          className="h-10"
+                          placeholder="Your name"
+                        />
                       </div>
                     </AnimateOnScroll>
                     <AnimateOnScroll animation="slideUp" delay={0.6}>
@@ -107,7 +170,10 @@ export default function Contact() {
                           id="email"
                           name="email"
                           type="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
                           required
+                          disabled={isLoading}
                           className="h-10"
                           placeholder="your.email@example.com"
                         />
@@ -122,7 +188,10 @@ export default function Contact() {
                       <Input
                         id="subject"
                         name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
                         required
+                        disabled={isLoading}
                         className="h-10"
                         placeholder="What is this regarding?"
                       />
@@ -136,19 +205,19 @@ export default function Contact() {
                       <Textarea
                         id="message"
                         name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         required
+                        disabled={isLoading}
                         rows={4}
                         placeholder="Write your message here..."
                         className="resize-none"
                       />
                     </div>
                   </AnimateOnScroll>
-                  {/* Hidden fields to ensure emails go to your address */}
-                  <input type="hidden" name="_replyto" value="paudelg97@gmail.com" />
-                  <input type="hidden" name="_subject" value="New message from portfolio website" />
                   <AnimateOnScroll animation="bounce" delay={0.9}>
-                    <Button type="submit" className="w-full h-11 text-base">
-                      Send Message
+                    <Button type="submit" disabled={isLoading} className="w-full h-11 text-base">
+                      {isLoading ? "Sending..." : "Send Message"}
                     </Button>
                   </AnimateOnScroll>
                 </form>
