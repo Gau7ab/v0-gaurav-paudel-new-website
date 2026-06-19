@@ -2,71 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Mail, MapPin, Phone } from 'lucide-react'
+import { Mail, MapPin, Phone, Send } from 'lucide-react'
 import Image from 'next/image'
 import { AnimateOnScroll, AnimateStagger } from '@/components/scroll-animation'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 export default function Contact() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState({ success: '', error: '' })
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  })
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setMessage({ success: '', error: '' })
-
-    try {
-      const response = await fetch('https://formspree.io/f/xwpojlky', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message
-        })
-      })
-
-      if (response.ok) {
-        setMessage({ success: 'Message sent successfully! Redirecting...', error: '' })
-        setFormData({ name: '', email: '', subject: '', message: '' })
-        
-        setTimeout(() => {
-          router.push('/thank-you')
-        }, 1500)
-      } else {
-        setMessage({ success: '', error: 'Failed to send message. Please try again.' })
-      }
-    } catch (error) {
-      console.error('Error sending message:', error)
-      setMessage({ success: '', error: 'An error occurred. Please try again later.' })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className="container mx-auto px-4 py-8 md:py-12">
       <div className="grid gap-6 md:gap-8 md:grid-cols-2">
@@ -139,100 +79,44 @@ export default function Contact() {
             </Card>
           </AnimateOnScroll>
 
-          {/* Contact Form Card */}
+          {/* Get in Touch Email Card */}
           <AnimateOnScroll animation="slideLeft" delay={0.4}>
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle>Get in Touch</CardTitle>
               </CardHeader>
-              <CardContent>
-                {message.success && (
-                  <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                    <p className="text-sm text-green-600 dark:text-green-400">{message.success}</p>
-                  </div>
-                )}
-
-                {message.error && (
-                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                    <p className="text-sm text-red-600 dark:text-red-400">{message.error}</p>
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <AnimateOnScroll animation="slideUp" delay={0.5}>
-                      <div className="space-y-2">
-                        <label htmlFor="name" className="text-sm font-medium">
-                          Name
-                        </label>
-                        <Input
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          disabled={isLoading}
-                          placeholder="Your name"
-                        />
+              <CardContent className="space-y-6">
+                <AnimateOnScroll animation="slideUp" delay={0.5}>
+                  <div className="text-center space-y-4">
+                    <div className="flex justify-center">
+                      <div className="p-3 bg-primary/10 rounded-lg">
+                        <Mail className="h-8 w-8 text-primary" />
                       </div>
-                    </AnimateOnScroll>
-                    <AnimateOnScroll animation="slideUp" delay={0.6}>
-                      <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-medium">
-                          Email
-                        </label>
-                        <Input
-                          id="email"
-                          name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          disabled={isLoading}
-                          placeholder="your.email@example.com"
-                        />
-                      </div>
-                    </AnimateOnScroll>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">Send me an email directly</p>
+                      <p className="text-lg font-semibold">paudelg97@gmail.com</p>
+                    </div>
                   </div>
-                  <AnimateOnScroll animation="slideUp" delay={0.7}>
-                    <div className="space-y-2">
-                      <label htmlFor="subject" className="text-sm font-medium">
-                        Subject
-                      </label>
-                      <Input
-                        id="subject"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleInputChange}
-                        required
-                        disabled={isLoading}
-                        placeholder="What is this regarding?"
-                      />
-                    </div>
-                  </AnimateOnScroll>
-                  <AnimateOnScroll animation="slideUp" delay={0.8}>
-                    <div className="space-y-2">
-                      <label htmlFor="message" className="text-sm font-medium">
-                        Message
-                      </label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        required
-                        disabled={isLoading}
-                        rows={4}
-                        placeholder="Write your message here..."
-                      />
-                    </div>
-                  </AnimateOnScroll>
-                  <AnimateOnScroll animation="bounce" delay={0.9}>
-                    <Button type="submit" disabled={isLoading} className="w-full h-11 text-base">
-                      {isLoading ? 'Sending...' : 'Send Message'}
-                    </Button>
-                  </AnimateOnScroll>
-                </form>
+                </AnimateOnScroll>
+
+                <AnimateOnScroll animation="bounce" delay={0.6}>
+                  <Button
+                    asChild
+                    className="w-full h-11 text-base"
+                  >
+                    <a href="mailto:paudelg97@gmail.com" className="flex items-center justify-center gap-2">
+                      <Send className="h-4 w-4" />
+                      Contact Me
+                    </a>
+                  </Button>
+                </AnimateOnScroll>
+
+                <div className="pt-2 border-t">
+                  <p className="text-xs text-muted-foreground text-center">
+                    Your default email client will open. You can write your message and send it directly.
+                  </p>
+                </div>
               </CardContent>
             </Card>
           </AnimateOnScroll>
