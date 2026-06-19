@@ -12,8 +12,8 @@ function extractImageUrl(value: string): string {
   let v = value.trim()
   
   // First, remove all script and iframe tags completely
-  v = v.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-  v = v.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+  v = v.replace(/<script[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+  v = v.replace(/<iframe[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
   
   // Try to extract src attribute from img or other tags
   const srcMatch = v.match(/src=["']?(https?:\/\/[^"'\s>]+)["']?/)
