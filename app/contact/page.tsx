@@ -27,23 +27,18 @@ export default function Contact() {
     setErrorMessage("")
 
     try {
-      console.log("[v0] Submitting contact form:", formData)
       const response = await fetch("/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
 
-      console.log("[v0] API Response status:", response.status)
       const data = await response.json()
-      console.log("[v0] API Response data:", data)
 
       if (response.ok) {
-        console.log("[v0] Message sent successfully, redirecting to thank you page")
         router.push("/thank-you")
       } else {
         setErrorMessage(data.error || "Failed to send message. Please try again.")
-        console.error("[v0] API error:", data.error)
       }
     } catch (error) {
       console.error("[v0] Error sending message:", error)
