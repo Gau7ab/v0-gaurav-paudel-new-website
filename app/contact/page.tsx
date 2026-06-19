@@ -1,52 +1,67 @@
-"use client"
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Mail, MapPin, Phone } from "lucide-react"
-import Image from "next/image"
-import { AnimateOnScroll, AnimateStagger } from "@/components/scroll-animation"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Mail, MapPin, Phone } from 'lucide-react'
+import Image from 'next/image'
+import { AnimateOnScroll, AnimateStagger } from '@/components/scroll-animation'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Contact() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const [successMessage, setSuccessMessage] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
+  const [message, setMessage] = useState({ success: '', error: '' })
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  })
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
-    setErrorMessage("")
-    setSuccessMessage("")
-
-    const form = e.currentTarget
-    const formData = new FormData(form)
+    setMessage({ success: '', error: '' })
 
     try {
-      const response = await fetch("https://formspree.io/f/xwpojlky", {
-        method: "POST",
-        body: formData,
+      const response = await fetch('https://formspree.io/f/xwpojlky', {
+        method: 'POST',
         headers: {
-          Accept: "application/json",
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message
+        })
       })
 
       if (response.ok) {
-        setSuccessMessage("Message sent successfully! Redirecting...")
-        form.reset()
-        // Redirect to thank you page after 1 second
+        setMessage({ success: 'Message sent successfully! Redirecting...', error: '' })
+        setFormData({ name: '', email: '', subject: '', message: '' })
+        
         setTimeout(() => {
-          router.push("/thank-you")
-        }, 1000)
+          router.push('/thank-you')
+        }, 1500)
       } else {
-        setErrorMessage("Failed to send message. Please try again.")
+        setMessage({ success: '', error: 'Failed to send message. Please try again.' })
       }
     } catch (error) {
-      console.error("[v0] Error sending message:", error)
-      setErrorMessage("An error occurred. Please try again later.")
+      console.error('Error sending message:', error)
+      setMessage({ success: '', error: 'An error occurred. Please try again later.' })
     } finally {
       setIsLoading(false)
     }
@@ -131,15 +146,15 @@ export default function Contact() {
                 <CardTitle>Get in Touch</CardTitle>
               </CardHeader>
               <CardContent>
-                {successMessage && (
+                {message.success && (
                   <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
-                    <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
+                    <p className="text-sm text-green-600 dark:text-green-400">{message.success}</p>
                   </div>
                 )}
 
-                {errorMessage && (
+                {message.error && (
                   <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                    <p className="text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
+                    <p className="text-sm text-red-600 dark:text-red-400">{message.error}</p>
                   </div>
                 )}
 
@@ -153,9 +168,10 @@ export default function Contact() {
                         <Input
                           id="name"
                           name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
                           required
                           disabled={isLoading}
-                          className="h-10"
                           placeholder="Your name"
                         />
                       </div>
@@ -169,9 +185,10 @@ export default function Contact() {
                           id="email"
                           name="email"
                           type="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
                           required
                           disabled={isLoading}
-                          className="h-10"
                           placeholder="your.email@example.com"
                         />
                       </div>
@@ -185,9 +202,10 @@ export default function Contact() {
                       <Input
                         id="subject"
                         name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
                         required
                         disabled={isLoading}
-                        className="h-10"
                         placeholder="What is this regarding?"
                       />
                     </div>
@@ -200,17 +218,18 @@ export default function Contact() {
                       <Textarea
                         id="message"
                         name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         required
                         disabled={isLoading}
                         rows={4}
                         placeholder="Write your message here..."
-                        className="resize-none"
                       />
                     </div>
                   </AnimateOnScroll>
                   <AnimateOnScroll animation="bounce" delay={0.9}>
                     <Button type="submit" disabled={isLoading} className="w-full h-11 text-base">
-                      {isLoading ? "Sending..." : "Send Message"}
+                      {isLoading ? 'Sending...' : 'Send Message'}
                     </Button>
                   </AnimateOnScroll>
                 </form>
