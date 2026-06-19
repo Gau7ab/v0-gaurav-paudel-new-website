@@ -4,31 +4,27 @@ import { neon } from "@neondatabase/serverless"
 const sql = neon(process.env.DATABASE_URL!)
 
 /**
+ * Removes all HTML tags and script content from a string
+ */
+function stripHtmlTags(value: string): string {
+  if (!value) return ''
+  return value
+    .replace(/<[^>]*>/g, '')
+    .trim()
+}
+
+/**
  * Extracts a direct image URL from imgbb embed HTML, BBCode, or returns
  * the value as-is if it is already a plain URL.
  */
 function extractImageUrl(value: string): string {
   if (!value) return ''
-  let v = value.trim()
+  // First remove all HTML tags completely
+  let v = stripHtmlTags(value)
   
-  // First, remove all script and iframe tags completely
-  v = v.replace(/<script[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-  v = v.replace(/<iframe[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-  
-  // Try to extract src attribute from img or other tags
-  const srcMatch = v.match(/src=["']?(https?:\/\/[^"'\s>]+)["']?/)
-  if (srcMatch) return srcMatch[1]
-  
-  // Try BBCode format
-  const bbMatch = v.match(/\[img\](https?:\/\/[^\[]+)\[\/img\]/i)
-  if (bbMatch) return bbMatch[1]
-  
-  // Extract any http/https URL from the string
-  const urlMatch = v.match(/(https?:\/\/[^\s<>"]*)/i)
+  // Try to extract URL patterns
+  const urlMatch = v.match(/(https?:\/\/[^\s"'<>]*)/i)
   if (urlMatch) return urlMatch[1]
-  
-  // Strip any remaining HTML tags
-  v = v.replace(/<[^>]*>/g, '').trim()
   
   return v
 }
@@ -45,9 +41,17 @@ export async function GET() {
       sql`SELECT * FROM portfolio_treks ORDER BY sort_order, id`,
     ])
 
-    // Sanitize trek image URLs to prevent script tag rendering
+    // Sanitize all trek fields to prevent script tag rendering
     const sanitizedTreks = treks.map((trek: any) => ({
       ...trek,
+      name: stripHtmlTags(trek.name || ''),
+      description: stripHtmlTags(trek.description || ''),
+      experience: stripHtmlTags(trek.experience || ''),
+      altitude: stripHtmlTags(trek.altitude || ''),
+      elevation: stripHtmlTags(trek.elevation || ''),
+      location: stripHtmlTags(trek.location || ''),
+      difficulty: stripHtmlTags(trek.difficulty || ''),
+      duration: stripHtmlTags(trek.duration || ''),
       image_url: extractImageUrl(trek.image_url || ''),
       image: extractImageUrl(trek.image || ''),
     }))
