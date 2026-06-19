@@ -74,6 +74,8 @@ export function usePortfolioData() {
   }
 
   // Merge: use DB data when available, fall back to hardcoded
+  const treks = data?.treks?.length ? sanitizedTreks(data.treks) : sanitizedTreks(fallbackData.treks)
+  
   return {
     about: data?.about || fallbackData.about,
     skills: data?.skills?.length ? data.skills : fallbackData.skills,
@@ -81,7 +83,7 @@ export function usePortfolioData() {
     education: data?.education?.length ? data.education : fallbackData.education,
     projects: data?.projects?.length ? data.projects : fallbackData.projects,
     achievements: data?.achievements?.length ? data.achievements : fallbackData.achievements,
-    treks: data?.treks?.length ? sanitizedTreks(data.treks) : fallbackData.treks,
+    treks,
     isLoading,
     error,
   }
