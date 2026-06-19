@@ -7,12 +7,49 @@ import { Textarea } from "@/components/ui/textarea"
 import { Mail, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { AnimateOnScroll, AnimateStagger } from "@/components/scroll-animation"
-import type { FormEvent } from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Contact() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Allow normal form submission to Formspree
-    // which will handle the POST and redirect
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setErrorMessage("")
+    setSuccessMessage("")
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+
+    try {
+      const response = await fetch("https://formspree.io/f/xwpojlky", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+
+      if (response.ok) {
+        setSuccessMessage("Message sent successfully! Redirecting...")
+        form.reset()
+        // Redirect to thank you page after 1 second
+        setTimeout(() => {
+          router.push("/thank-you")
+        }, 1000)
+      } else {
+        setErrorMessage("Failed to send message. Please try again.")
+      }
+    } catch (error) {
+      console.error("[v0] Error sending message:", error)
+      setErrorMessage("An error occurred. Please try again later.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -94,7 +131,19 @@ export default function Contact() {
                 <CardTitle>Get in Touch</CardTitle>
               </CardHeader>
               <CardContent>
-                <form action="https://formspree.io/f/xwpojlky" method="POST" onSubmit={handleSubmit} className="space-y-4">
+                {successMessage && (
+                  <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
+                  </div>
+                )}
+
+                {errorMessage && (
+                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                    <p className="text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <AnimateOnScroll animation="slideUp" delay={0.5}>
                       <div className="space-y-2">
@@ -105,6 +154,7 @@ export default function Contact() {
                           id="name"
                           name="name"
                           required
+                          disabled={isLoading}
                           className="h-10"
                           placeholder="Your name"
                         />
@@ -120,6 +170,7 @@ export default function Contact() {
                           name="email"
                           type="email"
                           required
+                          disabled={isLoading}
                           className="h-10"
                           placeholder="your.email@example.com"
                         />
@@ -135,6 +186,7 @@ export default function Contact() {
                         id="subject"
                         name="subject"
                         required
+                        disabled={isLoading}
                         className="h-10"
                         placeholder="What is this regarding?"
                       />
@@ -149,17 +201,16 @@ export default function Contact() {
                         id="message"
                         name="message"
                         required
+                        disabled={isLoading}
                         rows={4}
                         placeholder="Write your message here..."
                         className="resize-none"
                       />
                     </div>
                   </AnimateOnScroll>
-                  {/* Hidden field to redirect to thank you page after submission */}
-                  <input type="hidden" name="_next" value={`${typeof window !== "undefined" ? window.location.origin : ""}/thank-you`} />
                   <AnimateOnScroll animation="bounce" delay={0.9}>
-                    <Button type="submit" className="w-full h-11 text-base">
-                      Send Message
+                    <Button type="submit" disabled={isLoading} className="w-full h-11 text-base">
+                      {isLoading ? "Sending..." : "Send Message"}
                     </Button>
                   </AnimateOnScroll>
                 </form>
