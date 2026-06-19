@@ -7,50 +7,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Mail, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { AnimateOnScroll, AnimateStagger } from "@/components/scroll-animation"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 
 export default function Contact() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
-  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "" })
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setErrorMessage("")
-
-    try {
-      console.log("[v0] Submitting form with data:", formData)
-      const response = await fetch("/api/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      })
-
-      console.log("[v0] Response status:", response.status, response.ok)
-      const data = await response.json()
-      console.log("[v0] Response data:", data)
-
-      if (response.ok) {
-        console.log("[v0] Form submission successful, redirecting to /thank-you")
-        router.push("/thank-you")
-      } else {
-        console.error("[v0] API returned error:", data.error)
-        setErrorMessage(data.error || "Failed to send message. Please try again.")
-      }
-    } catch (error) {
-      console.error("[v0] Error sending message:", error)
-      setErrorMessage("An error occurred. Please try again later.")
-    } finally {
-      setIsLoading(false)
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Allow normal form submission to Formspree
+    // which will handle the POST and redirect
   }
 
   return (
@@ -139,7 +100,7 @@ export default function Contact() {
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form action="https://formspree.io/f/xwpojlky" method="POST" onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <AnimateOnScroll animation="slideUp" delay={0.5}>
                       <div className="space-y-2">
@@ -149,10 +110,7 @@ export default function Contact() {
                         <Input
                           id="name"
                           name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
                           required
-                          disabled={isLoading}
                           className="h-10"
                           placeholder="Your name"
                         />
@@ -167,10 +125,7 @@ export default function Contact() {
                           id="email"
                           name="email"
                           type="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
                           required
-                          disabled={isLoading}
                           className="h-10"
                           placeholder="your.email@example.com"
                         />
@@ -185,10 +140,7 @@ export default function Contact() {
                       <Input
                         id="subject"
                         name="subject"
-                        value={formData.subject}
-                        onChange={handleInputChange}
                         required
-                        disabled={isLoading}
                         className="h-10"
                         placeholder="What is this regarding?"
                       />
@@ -202,19 +154,18 @@ export default function Contact() {
                       <Textarea
                         id="message"
                         name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
                         required
-                        disabled={isLoading}
                         rows={4}
                         placeholder="Write your message here..."
                         className="resize-none"
                       />
                     </div>
                   </AnimateOnScroll>
+                  {/* Hidden field to redirect to thank you page after submission */}
+                  <input type="hidden" name="_next" value={`${typeof window !== "undefined" ? window.location.origin : ""}/thank-you`} />
                   <AnimateOnScroll animation="bounce" delay={0.9}>
-                    <Button type="submit" disabled={isLoading} className="w-full h-11 text-base">
-                      {isLoading ? "Sending..." : "Send Message"}
+                    <Button type="submit" className="w-full h-11 text-base">
+                      Send Message
                     </Button>
                   </AnimateOnScroll>
                 </form>
