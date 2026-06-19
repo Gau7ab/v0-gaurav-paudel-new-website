@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Mail, MapPin, Phone } from "lucide-react"
 import Image from "next/image"
 import { AnimateOnScroll, AnimateStagger } from "@/components/scroll-animation"
+import type { FormEvent } from "react"
 
 export default function Contact() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -93,13 +94,6 @@ export default function Contact() {
                 <CardTitle>Get in Touch</CardTitle>
               </CardHeader>
               <CardContent>
-                {/* Error Message */}
-                {errorMessage && (
-                  <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-                    <p className="text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
-                  </div>
-                )}
-
                 <form action="https://formspree.io/f/xwpojlky" method="POST" onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <AnimateOnScroll animation="slideUp" delay={0.5}>
